@@ -1,4 +1,4 @@
-#include "Adjacency.h"
+#include "../includes/Adjacency.h"
 
 Adjacency::Adjacency(Vertex const &vertex, size_t weight):
 	_vertex(vertex),

@@ -19,13 +19,14 @@ private:
 
 	bool						_matrixInitialized;
 
-	Vertex	const &getVertexById(vertex_id vertexId);
+//	Vertex	const &getVertexById(vertex_id vertexId);
 
 	size_t	getMatrixSize(std::ifstream &file);
 
 public:
 	void	loadGraphFromFile(std::string const &filename);
 	void	exportGraphToDot(std::string const &filename);
+	Vertex	const &getVertexById(vertex_id vertexId);
 	~Graph();
 };
 

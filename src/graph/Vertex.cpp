@@ -1,4 +1,4 @@
-#include "Vertex.h"
+#include "../includes/Vertex.h"
 
 Vertex::Vertex()
 {

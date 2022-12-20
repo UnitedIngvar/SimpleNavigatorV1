@@ -1,4 +1,4 @@
-#include "s21_graph.h"
+#include "../includes/s21_graph.h"
 
 Vertex	const &Graph::getVertexById(vertex_id vertexId)
 {
