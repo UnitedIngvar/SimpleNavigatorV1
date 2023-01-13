@@ -1,14 +1,13 @@
 #include "Vertex.h"
 
-Vertex::Vertex()
+Vertex::Vertex(Vertex const &other)
+	: _id(other._id), _adjacentVertexes(other._adjacentVertexes)
 {
-	//TODO: get rid of this;
 }
 
-Vertex::Vertex(Vertex const &vertex)
+Vertex::Vertex(vertex_id vertexId)
+	: _id(vertexId)
 {
-	//TODO: think about how to create adjacencies;
-	//TODO: check if we have to add adjacencies at runtime;
 }
 
 vertex_id						Vertex::getId() const
@@ -19,4 +18,17 @@ vertex_id						Vertex::getId() const
 std::vector<Adjacency> const	Vertex::getAdjacencies() const
 {
 	return _adjacentVertexes;
+}
+
+void							Vertex::addAdjacency(Adjacency const &adjacency)
+{
+	_adjacentVertexes.push_back(adjacency);
+}
+
+bool							Vertex::operator==(Vertex const &other) const
+{
+	// We're only interested in vertex id here,
+	// as we fill the adjacency list only once
+	// in the beginning of the program
+	return other.getId() == this->getId();
 }
