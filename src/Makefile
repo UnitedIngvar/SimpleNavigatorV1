@@ -3,17 +3,19 @@ NAME					= greph
 DIR						= .
 HEADERS_DIR				= includes/
 INCLUDES				= -I$(HEADERS_DIR)
-SRCS					= $(shell find $(DIR) -name *.cpp)
+SRCS					= $(shell find $(DIR) -name "*.cpp")
 OBJECTS					= $(patsubst %.cpp, %.o, $(SRCS))
 D_FILES					= ${patsubst %.cpp, %.d, ${SRCS}}
 
 CC				= c++
-CFLAGS			=-Werror -Wall -Wextra -std=c++98
+CFLAGS			=-Werror -Wall -Wextra -std=c++17
 
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
 		$(CC) $(CFLAGS) $(OBJECTS) -o $(NAME)
+
+objects: $(OBJECTS)
 
 %.o: %.cpp
 		$(CC) $(CFLAGS) -c $(INCLUDES) $< -o $@ -MMD
@@ -25,6 +27,9 @@ fclean: clean
 		@rm -f $(NAME)
 
 re:		fclean all
+
+test:
+	cd ../tests && ${MAKE}
 
 include $(wildcard $(D_FILES))
 
