@@ -1,5 +1,8 @@
-#include "Adjacency.h"
-#include "vector"
+#ifndef VERTEX_H
+# define VERTEX_H
+
+# include "Adjacency.h"
+# include "vector"
 
 typedef size_t vertex_id;
 
@@ -12,9 +15,14 @@ private:
 	std::vector<Adjacency>	_adjacentVertexes;
 
 public:
-	Vertex();
-	Vertex(Vertex const &vertex);
+	Vertex(vertex_id vertexId);
+	Vertex(Vertex const &other);
 
 	vertex_id						getId() const;
 	std::vector<Adjacency> const	getAdjacencies() const;
+	void							addAdjacency(Adjacency const &adjacency);
+
+	bool	operator==(Vertex const &other) const;
 };
+
+#endif

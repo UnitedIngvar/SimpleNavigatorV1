@@ -1,75 +1,77 @@
+<<<<<<< HEAD
 #include "../includes/s21_graph.h"
-
-Vertex	const &Graph::getVertexById(vertex_id vertexId)
-{
-	return *(new Vertex()); // TODO: mock
-}
-
-size_t	Graph::getMatrixSize(std::ifstream &file)
-{
-	std::string line;
-	size_t	matrixSize;
-	bool	matrixSizeFound;
-
-	while (getline(file, line))
-	{
-		char whiteSpaces[] = {' ', '\n', '\t', '\v', '\b', '\r', '\f', '\a'};
-		size_t firstNumberPosition = line.find_first_not_of(whiteSpaces);
-		if (firstNumberPosition == std::string::npos)
-			continue;
-
-		size_t numberLength = line.find_first_of(whiteSpaces, firstNumberPosition) - firstNumberPosition;
-
-		std::string matrixSizeStr = line.substr(firstNumberPosition, numberLength);
-		if (!std::all_of(matrixSizeStr.begin(), matrixSizeStr.end(), ::isdigit))
-			throw std::invalid_argument("Adjecency matrix should contain only numbers");
-
-		matrixSize = std::stol(matrixSizeStr);
-		if (matrixSize <= 0)
-			throw std::invalid_argument("Numbers in adjecency matrix should have only positive values");
-
-		if (line.find_first_not_of(whiteSpaces, firstNumberPosition + numberLength) != std::string::npos)
-			throw std::invalid_argument("Invalid format of adjecency matrix");
-
-		matrixSizeFound = true;
-		break;
-	}
-
-	if (!matrixSizeFound)
-		throw std::invalid_argument("Invalid format of adjecency matrix");
-
-	return matrixSize;
-}
+=======
+#include <exception>
+#include <algorithm>
+#include <vector>
+#include "s21_graph.h"
+#include "Constants.h"
+#include "MatrixReader.h"
+#include "VertexMapBuilder.hpp"
+>>>>>>> 3607ebee7d339581a572301388d2bbf7ff0b221d
 
 void	Graph::loadGraphFromFile(std::string const &filename)
 {
-	// std::ifstream file(filename);
-	// if (!file.good())
-	// {
-	// 	file.clear();
-	// 	throw std::invalid_argument("file could not be opened");
-	// }
+	std::ifstream file(filename);
+	if (!file.good())
+	{
+		file.clear();
+		throw std::invalid_argument("file could not be opened");
+	}
 
-	// // 1. Cчитываем строки, пока не появится текст. Постоянно убеждаемся, что перед нами именно число.
-	// int32_t matrixSize = getMatrixSize(file);
+	MatrixReader matrixReader;
+	_matrixSize = matrixReader.readMatrixSize(file);
+	if (_matrixSize == 0)
+	{
+		throw std::invalid_argument("matrix size can't be zero");
+	}
 
-	// std::cout << matrixSize << std::endl;
-	// return;
-	// // 2. Первое число считываем - это размерность матрицы (n). Доходим до конца.
-	// // Если есть еще число - бросаем исключение - invalid format
-	// // 3. Начинаем считывать мартицу смежности. Задаем двумерный массив [n][n].
-	// // Числа должны быть >= 0
-	// // На каждой строке должно быть не меньше n чисел. Если больше - пофигу.
-	// // В матрице не должно быть меньше n строк. Если их больше - пофигу, не дочитываем до конца.
+	_adjecencyMatrix = matrixReader.readAdjacencyMatrix(file, _matrixSize);
+
+	VertexMapBuilder vertexMapBuilder;
+	_vertexMap = vertexMapBuilder.buildVertexesMap(_adjecencyMatrix, _matrixSize);
 }
+
 void	Graph::exportGraphToDot(std::string const &filename)
 {
+	(void) filename;
 }
+
+Vertex	const &Graph::getVertexById(vertex_id vertexId) const
+{
+	if (!_matrixInitialized)
+	{
+		throw std::invalid_argument("matrix is not initialized");
+	}
+	if (_vertexMap.find(vertexId) == _vertexMap.end())
+	{
+		throw std::out_of_range("vertex index " + std::to_string(vertexId) +
+		" is not present in the adjecency matrix");
+	}
+
+	return _vertexMap.at(vertexId);
+}
+
+size_t			Graph::getMatrixSize() const
+{
+	return _matrixSize;
+}
+
+size_t			**Graph::getAdjacencyMatrix() const
+{
+	return _adjecencyMatrix;
+}
+
 
 Graph::~Graph()
 {
 	if (_matrixInitialized)
 	{
-		// TODO: free the matrix;
+		for (size_t i = 0; i < _matrixSize; i++)
+		{
+			delete[] _adjecencyMatrix[i];
+		}
+
+		delete[] _adjecencyMatrix;
 	}
 }
