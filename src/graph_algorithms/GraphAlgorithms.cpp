@@ -1,16 +1,16 @@
+//#include "s21_graph_algorithms.h"
 #include "../includes/s21_graph_algorithms.h"
 #include <queue>
 
-std::vector<int> GraphAlgorithms::depthFirstSearch(Graph &graph, int startVertex) {
-	std::vector<int> traversedVertices;
-
-
-	return traversedVertices;
-}
+//std::vector<int> GraphAlgorithms::depthFirstSearch(Graph &graph, int startVertex) {
+//	std::vector<int> traversedVertices;
+//
+//
+//	return traversedVertices;
+//}
 
 std::vector<int> GraphAlgorithms::breadthFirstSearch(Graph &graph, int startVertex) {
-
-	int sizeGraph = 5; // need getterSizeGraph (sizeGraph = graph.getSize())
+	size_t sizeGraph = graph.getMatrixSize();
 	std::vector<int> parent(sizeGraph, -1);
 	startVertex--;
 	parent[startVertex] = startVertex;
@@ -34,8 +34,8 @@ std::vector<int> GraphAlgorithms::breadthFirstSearch(Graph &graph, int startVert
 }
 
 int GraphAlgorithms::getShortestPathBetweenVertices(Graph &graph, int vertex1, int vertex2) {
-	int sizeGraph = 5; // need getterSizeGraph (sizeGraph = graph.getSize())
-	std::vector<std::vector<int>> weight(sizeGraph, std::vector<int>(sizeGraph)); // need getterWeightMatrix (weight = graph.getAdjecencyMatrix())
+	size_t sizeGraph = (int)graph.getMatrixSize();
+	size_t **w = graph.getAdjacencyMatrix();
 	vertex1--;
 	vertex2--;
 	std::vector<int> distance(sizeGraph, INT_MAX);
@@ -46,16 +46,16 @@ int GraphAlgorithms::getShortestPathBetweenVertices(Graph &graph, int vertex1, i
 	while (minInd < INT_MAX) {
 		minInd = INT_MAX;
 		minWeight = INT_MAX;
-		for (int i = 0; i < sizeGraph; i++) {
+		for (size_t i = 0; i < sizeGraph; i++) {
 			if (!visited[i] && distance[i] < minWeight) {
-				minInd = i;
+				minInd = (int)i;
 				minWeight = distance[i];
 			}
 		}
 		if (minInd != INT_MAX) {
-			for (int i = 0; i < sizeGraph; i++) {
-				if (weight[minInd][i] != 0 && minWeight + weight[minInd][i] < distance[i]) {
-					distance[i] = minWeight + weight[minInd][i];
+			for (size_t i = 0; i < sizeGraph; i++) {
+				if ((int)w[minInd][i] != 0 && minWeight + (int)w[minInd][i] < distance[i]) {
+					distance[i] = minWeight + (int)w[minInd][i];
 				}
 			}
 			visited[minInd] = true;

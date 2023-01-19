@@ -1,14 +1,11 @@
-<<<<<<< HEAD
-#include "../includes/s21_graph.h"
-=======
 #include <exception>
 #include <algorithm>
 #include <vector>
+
 #include "s21_graph.h"
 #include "Constants.h"
 #include "MatrixReader.h"
 #include "VertexMapBuilder.hpp"
->>>>>>> 3607ebee7d339581a572301388d2bbf7ff0b221d
 
 void	Graph::loadGraphFromFile(std::string const &filename)
 {
@@ -46,7 +43,7 @@ Vertex	const &Graph::getVertexById(vertex_id vertexId) const
 	if (_vertexMap.find(vertexId) == _vertexMap.end())
 	{
 		throw std::out_of_range("vertex index " + std::to_string(vertexId) +
-		" is not present in the adjecency matrix");
+								" is not present in the adjecency matrix");
 	}
 
 	return _vertexMap.at(vertexId);

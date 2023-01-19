@@ -1,12 +1,12 @@
-#include "../includes/Vertex.h"
+#include "Vertex.h"
 
 Vertex::Vertex(Vertex const &other)
-	: _id(other._id), _adjacentVertexes(other._adjacentVertexes)
+		: _id(other._id), _adjacentVertexes(other._adjacentVertexes)
 {
 }
 
 Vertex::Vertex(vertex_id vertexId)
-	: _id(vertexId)
+		: _id(vertexId)
 {
 }
 
