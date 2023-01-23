@@ -1,5 +1,4 @@
-//#include "Constants.h"
-#include "../includes/Constants.h"
+#include "Constants.h"
 
 const char *Constants::getWhiteSpaces()
 {

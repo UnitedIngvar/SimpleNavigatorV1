@@ -1,15 +1,15 @@
-//#include "s21_graph_algorithms.h"
-#include "../includes/s21_graph_algorithms.h"
+#include "s21_graph_algorithms.h"
 #include <queue>
 
-//std::vector<int> GraphAlgorithms::depthFirstSearch(Graph &graph, int startVertex) {
-//	std::vector<int> traversedVertices;
-//
-//
-//	return traversedVertices;
-//}
+std::vector<int> GraphAlgorithms::depthFirstSearch(IGraph &graph, int startVertex) {
+	std::vector<int> traversedVertices = {1, 2, 3};
+	int a = graph.getMatrixSize();
+	(void)a;
+	(void)startVertex;
+	return traversedVertices;
+}
 
-std::vector<int> GraphAlgorithms::breadthFirstSearch(Graph &graph, int startVertex) {
+std::vector<int> GraphAlgorithms::breadthFirstSearch(IGraph &graph, int startVertex) {
 	size_t sizeGraph = graph.getMatrixSize();
 	std::vector<int> parent(sizeGraph, -1);
 	startVertex--;
@@ -33,7 +33,7 @@ std::vector<int> GraphAlgorithms::breadthFirstSearch(Graph &graph, int startVert
 	return traversedVertices;
 }
 
-int GraphAlgorithms::getShortestPathBetweenVertices(Graph &graph, int vertex1, int vertex2) {
+int GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph, int vertex1, int vertex2) {
 	size_t sizeGraph = (int)graph.getMatrixSize();
 	size_t **w = graph.getAdjacencyMatrix();
 	vertex1--;

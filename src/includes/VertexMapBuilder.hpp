@@ -2,8 +2,7 @@
 # define VERTEX_MAP_BUILDER_H
 
 #include <map>
-//#include "Vertex.h"
-#include "../includes/Vertex.h"
+#include "Vertex.h"
 
 class VertexMapBuilder
 {

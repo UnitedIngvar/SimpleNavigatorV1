@@ -1,7 +1,6 @@
 #include <exception>
 #include <algorithm>
 #include <vector>
-
 #include "s21_graph.h"
 #include "Constants.h"
 #include "MatrixReader.h"
