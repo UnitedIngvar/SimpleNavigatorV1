@@ -4,17 +4,16 @@
 #include "s21_graph.h"
 
 class GraphAlgorithms {
+ public:
+  GraphAlgorithms() {}
 
-public:
-	GraphAlgorithms() {}
+  std::vector<int> depthFirstSearch(IGraph &graph, int startVertex);
 
-	std::vector<int> depthFirstSearch(IGraph &graph, int startVertex);
+  std::vector<int> breadthFirstSearch(IGraph &graph, int startVertex);
 
-	std::vector<int> breadthFirstSearch(IGraph &graph, int startVertex);
+  int getShortestPathBetweenVertices(IGraph &graph, int vertex1, int vertex2);
 
-	int getShortestPathBetweenVertices(IGraph &graph, int vertex1, int vertex2);
-
-	~GraphAlgorithms() {}
+  ~GraphAlgorithms() {}
 };
 
 #endif

@@ -66,9 +66,9 @@ run : $(TESTS)
 
 # TODO: поизучать, как правильно
 # считать покрытие тестами: https://stackoverflow.com/questions/2359344/google-test-code-coverage
-# coverage: $(TESTS)
-# 	gcov $(PROJECT_SRCS)
+#coverage: $(TESTS)
+#		gcov $(PROJECT_SRCS)
 
 include $(wildcard $(TESTS_DFILES))
 
-.PHONY: all clean fclean re coverage run
+.PHONY: all clean fclean re coverage build_gtest run
