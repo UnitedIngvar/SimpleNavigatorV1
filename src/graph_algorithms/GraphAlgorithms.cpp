@@ -5,10 +5,8 @@
 // поиск в глубину (без рекурсии) DFS (обход всего графа от стартовой вершины)
 std::vector<int> GraphAlgorithms::depthFirstSearch(IGraph &graph,
                                                    int startVertex) {
-  std::vector<int> traversedVertices = {1, 2, 3};
   (void)graph;
   (void)startVertex;
-  return traversedVertices;
 }
 
 // поиск в ширину BFS (обход всего графа от стартовой вершины)
