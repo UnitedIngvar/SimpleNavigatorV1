@@ -1,5 +1,6 @@
 #include "MatrixReader.h"
 #include "Constants.h"
+#include <iostream>
 
 // TODO: ВАЖНО! Может ли вес быть отрицательным?
 
@@ -28,6 +29,7 @@ size_t	MatrixReader::readNextNumberOrThrow(std::string const &line, size_t *offs
 
 	// Получаем строку, содержащую число
 	std::string numberStr = line.substr(numberPosition, numberLength);
+	//std::cout << "numberPosition" << std::endl;
 
 	// TODO: хорошо бы придумать что-то поэлегантнее
 	size_t number;
@@ -40,9 +42,9 @@ size_t	MatrixReader::readNextNumberOrThrow(std::string const &line, size_t *offs
 		throw std::invalid_argument(numberStr + " is more than maximum value of size_t number");
 	}
 
-	if (number <= 0)
+	if (number < 0)
 	{
-		throw std::invalid_argument("Numbers in adjecency matrix should have only positive values");
+		throw std::invalid_argument("Numbers in adjecency matrix must not contain negative numbers");
 	}
 
 	// двигаем смещение по строке на позицию после текущего числа
@@ -68,6 +70,11 @@ size_t	MatrixReader::readMatrixSize(std::ifstream &file)
 		size_t offset = 0;
 		matrixSize = readNextNumberOrThrow(line, &offset,
 			"Adjecency matrix should contain only positive numbers");
+
+		if (matrixSize <= 0)
+		{
+			throw std::invalid_argument("Matrix size can't be less or equal to '0'");
+		}
 
 		// Бросаем исключение, если есть какое-то число после размера матрицы.
 		if (line.find_first_not_of(' ', offset) != std::string::npos)
@@ -97,6 +104,7 @@ size_t	**MatrixReader::readAdjacencyMatrix(std::ifstream &file, size_t const mat
 
 	for (size_t i = 0; i < matrixSize; i++)
 	{
+		size_t offset = 0;
 		if (file.peek() == EOF)
 		{
 			throw std::invalid_argument("invalid number of rows in the adjecency matrix");
@@ -106,8 +114,9 @@ size_t	**MatrixReader::readAdjacencyMatrix(std::ifstream &file, size_t const mat
 		getline(file, line);
 		for (size_t j = 0; j < matrixSize; j++)
 		{
-			size_t offset = 0;
-			size_t number = readNextNumberOrThrow(line, &offset,
+			size_t number = readNextNumberOrThrow(
+				line,
+				&offset,
 				"invalid number of columns in the adjecency matrix");
 			matrix[i][j] = number;
 		}
