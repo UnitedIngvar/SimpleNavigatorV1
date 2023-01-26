@@ -927,9 +927,9 @@ is nothing really wrong with using a `Matcher<long>` to match an `int` - after
 all, we can first convert the `int` argument to a `long` losslessly before
 giving it to the matcher.
 
-To support this need, gMock gives you the `SafeMatcherCast<T>(m)` function. It
-casts a matcher `m` to type `Matcher<T>`. To ensure safety, gMock checks that
-(let `U` be the type `m` accepts :
+To support this need, gMock gives you the `SafeMatcherCast<T>(weightMatrix)` function. It
+casts a matcher `weightMatrix` to type `Matcher<T>`. To ensure safety, gMock checks that
+(let `U` be the type `weightMatrix` accepts :
 
 1.  Type `T` can be *implicitly* cast to type `U`;
 2.  When both `T` and `U` are built-in arithmetic types (`bool`, integers, and
@@ -957,12 +957,12 @@ class MockFoo : public Foo {
 
 ...
   MockFoo foo;
-  // m is a Matcher<Base*> we got from somewhere.
-  EXPECT_CALL(foo, DoThis(SafeMatcherCast<Derived*>(m)));
+  // weightMatrix is a Matcher<Base*> we got from somewhere.
+  EXPECT_CALL(foo, DoThis(SafeMatcherCast<Derived*>(weightMatrix)));
 ```
 
-If you find `SafeMatcherCast<T>(m)` too limiting, you can use a similar function
-`MatcherCast<T>(m)`. The difference is that `MatcherCast` works as long as you
+If you find `SafeMatcherCast<T>(weightMatrix)` too limiting, you can use a similar function
+`MatcherCast<T>(weightMatrix)`. The difference is that `MatcherCast` works as long as you
 can `static_cast` type `T` to type `U`.
 
 `MatcherCast` essentially lets you bypass C++'s type system (`static_cast` isn't
@@ -1070,11 +1070,11 @@ the second argument.
 The expression inside `With()` must be a matcher of type `Matcher<std::tuple<A1,
 ..., An>>`, where `A1`, ..., `An` are the types of the function arguments.
 
-You can also write `AllArgs(m)` instead of `m` inside `.With()`. The two forms
+You can also write `AllArgs(weightMatrix)` instead of `weightMatrix` inside `.With()`. The two forms
 are equivalent, but `.With(AllArgs(Lt()))` is more readable than `.With(Lt())`.
 
-You can use `Args<k1, ..., kn>(m)` to match the `n` selected arguments (as a
-tuple) against `m`. For example,
+You can use `Args<k1, ..., kn>(weightMatrix)` to match the `n` selected arguments (as a
+tuple) against `weightMatrix`. For example,
 
 ```cpp
 using ::testing::_;
@@ -1203,18 +1203,18 @@ certain member variable or the result of a certain getter method of the object.
 You can do this with `Field()` and `Property()`. More specifically,
 
 ```cpp
-Field(&Foo::bar, m)
+Field(&Foo::bar, weightMatrix)
 ```
 
 is a matcher that matches a `Foo` object whose `bar` member variable satisfies
-matcher `m`.
+matcher `weightMatrix`.
 
 ```cpp
-Property(&Foo::baz, m)
+Property(&Foo::baz, weightMatrix)
 ```
 
 is a matcher that matches a `Foo` object whose `baz()` method returns a value
-that satisfies matcher `m`.
+that satisfies matcher `weightMatrix`.
 
 For example:
 
@@ -1266,10 +1266,10 @@ Matcher<Foo> IsFoo(const Foo& foo) {
 C++ functions often take pointers as arguments. You can use matchers like
 `IsNull()`, `NotNull()`, and other comparison matchers to match a pointer, but
 what if you want to make sure the value *pointed to* by the pointer, instead of
-the pointer itself, has a certain property? Well, you can use the `Pointee(m)`
+the pointer itself, has a certain property? Well, you can use the `Pointee(weightMatrix)`
 matcher.
 
-`Pointee(m)` matches a pointer if and only if `m` matches the value the pointer
+`Pointee(weightMatrix)` matches a pointer if and only if `weightMatrix` matches the value the pointer
 points to. For example:
 
 ```cpp
@@ -1283,14 +1283,14 @@ expects `foo.Bar()` to be called with a pointer that points to a value greater
 than or equal to 3.
 
 One nice thing about `Pointee()` is that it treats a `NULL` pointer as a match
-failure, so you can write `Pointee(m)` instead of
+failure, so you can write `Pointee(weightMatrix)` instead of
 
 ```cpp
 using ::testing::AllOf;
 using ::testing::NotNull;
 using ::testing::Pointee;
 ...
-  AllOf(NotNull(), Pointee(m))
+  AllOf(NotNull(), Pointee(weightMatrix))
 ```
 
 without worrying that a `NULL` pointer will crash your test.
@@ -1431,8 +1431,8 @@ Use `Pair` when comparing maps or other associative containers.
 using ::testing::UnorderedElementsAre;
 using ::testing::Pair;
 ...
-  absl::flat_hash_map<string, int> m = {{"a", 1}, {"b", 2}, {"c", 3}};
-  EXPECT_THAT(m, UnorderedElementsAre(
+  absl::flat_hash_map<string, int> weightMatrix = {{"a", 1}, {"b", 2}, {"c", 3}};
+  EXPECT_THAT(weightMatrix, UnorderedElementsAre(
       Pair("a", 1), Pair("b", 2), Pair("c", 3)));
 ```
 
@@ -3269,14 +3269,14 @@ error.
 To make it even easier, you can add the following lines to your `~/.emacs` file:
 
 ```text
-(global-set-key "\M-m"  'google-compile)  ; m is for make
+(global-set-key "\M-weightMatrix"  'google-compile)  ; weightMatrix is for make
 (global-set-key [M-down] 'next-error)
 (global-set-key [M-up]  '(lambda () (interactive) (next-error -1)))
 ```
 
-Then you can type `M-m` to start a build (if you want to run the test as well,
+Then you can type `M-weightMatrix` to start a build (if you want to run the test as well,
 just make sure `foo_test.run` or `runtests` is in the build command you supply
-after typing `M-m`), or `M-up`/`M-down` to move back and forth between errors.
+after typing `M-weightMatrix`), or `M-up`/`M-down` to move back and forth between errors.
 
 ## Extending gMock
 
@@ -4064,8 +4064,8 @@ ACTION_TEMPLATE(ActionName,
                 AND_n_VALUE_PARAMS(p1, ..., p_n)) { statements; }
 ```
 
-defines an action template that takes *m* explicit template parameters and *n*
-value parameters, where *m* is in [1, 10] and *n* is in [0, 10]. `name_i` is the
+defines an action template that takes *weightMatrix* explicit template parameters and *n*
+value parameters, where *weightMatrix* is in [1, 10] and *n* is in [0, 10]. `name_i` is the
 name of the *i*-th template parameter, and `kind_i` specifies whether it's a
 `typename`, an integral constant, or a template. `p_i` is the name of the *i*-th
 value parameter.

@@ -133,7 +133,7 @@ one of the following, all defined in the `::testing` namespace:
 | `AnyNumber()`       | The function can be called any number of times.     |
 | `AtLeast(n)`        | The function call is expected at least *n* times.   |
 | `AtMost(n)`         | The function call is expected at most *n* times.    |
-| `Between(m, n)`     | The function call is expected between *m* and *n* times, inclusive. |
+| `Between(weightMatrix, n)`     | The function call is expected between *weightMatrix* and *n* times, inclusive. |
 | `Exactly(n)` or `n` | The function call is expected exactly *n* times. If *n* is 0, the call should never happen. |
 
 If the `Times` clause is omitted, GoogleTest infers the cardinality as follows:

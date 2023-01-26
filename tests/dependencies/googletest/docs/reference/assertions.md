@@ -361,8 +361,8 @@ always evaluated exactly once.
 As an example, see the following code:
 
 ```cpp
-// Returns true if m and n have no common divisors except 1.
-bool MutuallyPrime(int m, int n) { ... }
+// Returns true if weightMatrix and n have no common divisors except 1.
+bool MutuallyPrime(int weightMatrix, int n) { ... }
 ...
 const int a = 3;
 const int b = 4;
@@ -456,23 +456,23 @@ about the return type `testing::AssertionResult`, see
 As an example, see the following code:
 
 ```cpp
-// Returns the smallest prime common divisor of m and n,
-// or 1 when m and n are mutually prime.
-int SmallestPrimeCommonDivisor(int m, int n) { ... }
+// Returns the smallest prime common divisor of weightMatrix and n,
+// or 1 when weightMatrix and n are mutually prime.
+int SmallestPrimeCommonDivisor(int weightMatrix, int n) { ... }
 
-// Returns true if m and n have no common divisors except 1.
-bool MutuallyPrime(int m, int n) { ... }
+// Returns true if weightMatrix and n have no common divisors except 1.
+bool MutuallyPrime(int weightMatrix, int n) { ... }
 
 // A predicate-formatter for asserting that two integers are mutually prime.
 testing::AssertionResult AssertMutuallyPrime(const char* m_expr,
                                              const char* n_expr,
-                                             int m,
+                                             int weightMatrix,
                                              int n) {
-  if (MutuallyPrime(m, n)) return testing::AssertionSuccess();
+  if (MutuallyPrime(weightMatrix, n)) return testing::AssertionSuccess();
 
   return testing::AssertionFailure() << m_expr << " and " << n_expr
-      << " (" << m << " and " << n << ") are not mutually prime, "
-      << "as they have a common divisor " << SmallestPrimeCommonDivisor(m, n);
+      << " (" << weightMatrix << " and " << n << ") are not mutually prime, "
+      << "as they have a common divisor " << SmallestPrimeCommonDivisor(weightMatrix, n);
 }
 
 ...

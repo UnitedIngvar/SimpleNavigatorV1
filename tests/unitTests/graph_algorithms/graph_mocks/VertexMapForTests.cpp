@@ -1,11 +1,12 @@
-#include "vertexMapForTests.h"
+#include "VertexMapForTests.h"
 
-vertexMapForTests::vertexMapForTests(size_t matrixSize,
-                                     size_t **adjecencyMatrix) {
+VertexMapForTests::VertexMapForTests(vertex_id matrixSize,
+									 size_t **adjecencyMatrix) {
   VertexMapBuilder vertexMapBuilder;
   vertexMap = vertexMapBuilder.buildVertexesMap(adjecencyMatrix, matrixSize);
-  for (size_t i = 0; i < matrixSize; i++) {
-    for (size_t j = 0; j < matrixSize; j++) {
+
+  for (vertex_id i = 0; i < matrixSize; i++) {
+    for (vertex_id j = 0; j < matrixSize; j++) {
       if (adjecencyMatrix[i][j] != 0) {
         Adjacency adjacency(vertexMap.at(j + 1), adjecencyMatrix[i][j]);
         vertexMap.at(i + 1).addAdjacency(adjacency);
@@ -14,6 +15,6 @@ vertexMapForTests::vertexMapForTests(size_t matrixSize,
   }
 }
 
-Vertex const &vertexMapForTests::getVertexById(size_t vertexId) {
+Vertex const &VertexMapForTests::getVertexById(vertex_id vertexId) {
   return vertexMap.at(vertexId);
 }

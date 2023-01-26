@@ -45,8 +45,8 @@ Matcher                     | Description
 | `IsTrue()`             | `argument` evaluates to `true` in a Boolean context. |
 | `IsNull()`             | `argument` is a `NULL` pointer (raw or smart).      |
 | `NotNull()`            | `argument` is a non-null pointer (raw or smart).    |
-| `Optional(m)`          | `argument` is `optional<>` that contains a value matching `m`. (For testing whether an `optional<>` is set, check for equality with `nullopt`. You may need to use `Eq(nullopt)` if the inner type doesn't have `==`.)|
-| `VariantWith<T>(m)`    | `argument` is `variant<>` that holds the alternative of type T with a value matching `m`. |
+| `Optional(weightMatrix)`          | `argument` is `optional<>` that contains a value matching `weightMatrix`. (For testing whether an `optional<>` is set, check for equality with `nullopt`. You may need to use `Eq(nullopt)` if the inner type doesn't have `==`.)|
+| `VariantWith<T>(weightMatrix)`    | `argument` is `variant<>` that holds the alternative of type T with a value matching `weightMatrix`. |
 | `Ref(variable)`        | `argument` is a reference to `variable`.            |
 | `TypedEq<type>(value)` | `argument` has type `type` and is equal to `value`. You may need to use this instead of `Eq(value)` when the mock function is overloaded. |
 
@@ -102,7 +102,7 @@ The `argument` can be either a C string or a C++ string object:
 | `StrCaseNe(string)`      | `argument` is not equal to `string`, ignoring case. |
 | `StrEq(string)`          | `argument` is equal to `string`.                  |
 | `StrNe(string)`          | `argument` is not equal to `string`.              |
-| `WhenBase64Unescaped(m)` | `argument` is a base-64 escaped string whose unescaped string matches `m`. |
+| `WhenBase64Unescaped(weightMatrix)` | `argument` is a base-64 escaped string whose unescaped string matches `weightMatrix`. |
 
 `ContainsRegex()` and `MatchesRegex()` take ownership of the `RE` object. They
 use the regular expression syntax defined
@@ -118,7 +118,7 @@ messages, you can use:
 
 | Matcher                                   | Description                      |
 | :---------------------------------------- | :------------------------------- |
-| `BeginEndDistanceIs(m)` | `argument` is a container whose `begin()` and `end()` iterators are separated by a number of increments matching `m`. E.g. `BeginEndDistanceIs(2)` or `BeginEndDistanceIs(Lt(2))`. For containers that define a `size()` method, `SizeIs(m)` may be more efficient. |
+| `BeginEndDistanceIs(weightMatrix)` | `argument` is a container whose `begin()` and `end()` iterators are separated by a number of increments matching `weightMatrix`. E.g. `BeginEndDistanceIs(2)` or `BeginEndDistanceIs(Lt(2))`. For containers that define a `size()` method, `SizeIs(weightMatrix)` may be more efficient. |
 | `ContainerEq(container)` | The same as `Eq(container)` except that the failure message also includes which elements are in one container but not the other. |
 | `Contains(e)` | `argument` contains an element that matches `e`, which can be either a value or a matcher. |
 | `Contains(e).Times(n)` | `argument` contains elements that match `e`, which can be either a value or a matcher, and the number of matches is `n`, which can be either a value or a matcher. Unlike the plain `Contains` and `Each` this allows to check for arbitrary occurrences including testing for absence with `Contains(e).Times(0)`. |
@@ -128,13 +128,13 @@ messages, you can use:
 | `IsEmpty()` | `argument` is an empty container (`container.empty()`). |
 | `IsSubsetOf({e0, e1, ..., en})`, `IsSubsetOf(a_container)`, `IsSubsetOf(begin, end)`, `IsSubsetOf(array)`, or `IsSubsetOf(array, count)` | `argument` matches `UnorderedElementsAre(x0, x1, ..., xk)` for some subset `{x0, x1, ..., xk}` of the expected matchers. |
 | `IsSupersetOf({e0, e1, ..., en})`, `IsSupersetOf(a_container)`, `IsSupersetOf(begin, end)`, `IsSupersetOf(array)`, or `IsSupersetOf(array, count)` | Some subset of `argument` matches `UnorderedElementsAre(`expected matchers`)`. |
-| `Pointwise(m, container)`, `Pointwise(m, {e0, e1, ..., en})` | `argument` contains the same number of elements as in `container`, and for all i, (the i-th element in `argument`, the i-th element in `container`) match `m`, which is a matcher on 2-tuples. E.g. `Pointwise(Le(), upper_bounds)` verifies that each element in `argument` doesn't exceed the corresponding element in `upper_bounds`. See more detail below. |
-| `SizeIs(m)` | `argument` is a container whose size matches `m`. E.g. `SizeIs(2)` or `SizeIs(Lt(2))`. |
+| `Pointwise(weightMatrix, container)`, `Pointwise(weightMatrix, {e0, e1, ..., en})` | `argument` contains the same number of elements as in `container`, and for all i, (the i-th element in `argument`, the i-th element in `container`) match `weightMatrix`, which is a matcher on 2-tuples. E.g. `Pointwise(Le(), upper_bounds)` verifies that each element in `argument` doesn't exceed the corresponding element in `upper_bounds`. See more detail below. |
+| `SizeIs(weightMatrix)` | `argument` is a container whose size matches `weightMatrix`. E.g. `SizeIs(2)` or `SizeIs(Lt(2))`. |
 | `UnorderedElementsAre(e0, e1, ..., en)` | `argument` has `n + 1` elements, and under *some* permutation of the elements, each element matches an `ei` (for a different `i`), which can be a value or a matcher. |
 | `UnorderedElementsAreArray({e0, e1, ..., en})`, `UnorderedElementsAreArray(a_container)`, `UnorderedElementsAreArray(begin, end)`, `UnorderedElementsAreArray(array)`, or `UnorderedElementsAreArray(array, count)` | The same as `UnorderedElementsAre()` except that the expected element values/matchers come from an initializer list, STL-style container, iterator range, or C-style array. |
-| `UnorderedPointwise(m, container)`, `UnorderedPointwise(m, {e0, e1, ..., en})` | Like `Pointwise(m, container)`, but ignores the order of elements. |
-| `WhenSorted(m)` | When `argument` is sorted using the `<` operator, it matches container matcher `m`. E.g. `WhenSorted(ElementsAre(1, 2, 3))` verifies that `argument` contains elements 1, 2, and 3, ignoring order. |
-| `WhenSortedBy(comparator, m)` | The same as `WhenSorted(m)`, except that the given comparator instead of `<` is used to sort `argument`. E.g. `WhenSortedBy(std::greater(), ElementsAre(3, 2, 1))`. |
+| `UnorderedPointwise(weightMatrix, container)`, `UnorderedPointwise(weightMatrix, {e0, e1, ..., en})` | Like `Pointwise(weightMatrix, container)`, but ignores the order of elements. |
+| `WhenSorted(weightMatrix)` | When `argument` is sorted using the `<` operator, it matches container matcher `weightMatrix`. E.g. `WhenSorted(ElementsAre(1, 2, 3))` verifies that `argument` contains elements 1, 2, and 3, ignoring order. |
+| `WhenSortedBy(comparator, weightMatrix)` | The same as `WhenSorted(weightMatrix)`, except that the given comparator instead of `<` is used to sort `argument`. E.g. `WhenSortedBy(std::greater(), ElementsAre(3, 2, 1))`. |
 
 **Notes:**
 
@@ -145,7 +145,7 @@ messages, you can use:
         int len)` -- see [Multi-argument Matchers](#MultiArgMatchers)).
 *   The array being matched may be multi-dimensional (i.e. its elements can be
     arrays).
-*   `m` in `Pointwise(m, ...)` and `UnorderedPointwise(m, ...)` should be a
+*   `weightMatrix` in `Pointwise(weightMatrix, ...)` and `UnorderedPointwise(weightMatrix, ...)` should be a
     matcher for `::std::tuple<T, U>` where `T` and `U` are the element type of
     the actual container and the expected container, respectively. For example,
     to compare two `Foo` containers where `Foo` doesn't support `operator==`,
@@ -163,13 +163,13 @@ messages, you can use:
 
 | Matcher                         | Description                                |
 | :------------------------------ | :----------------------------------------- |
-| `Field(&class::field, m)`       | `argument.field` (or `argument->field` when `argument` is a plain pointer) matches matcher `m`, where `argument` is an object of type _class_. |
-| `Field(field_name, &class::field, m)` | The same as the two-parameter version, but provides a better error message. |
+| `Field(&class::field, weightMatrix)`       | `argument.field` (or `argument->field` when `argument` is a plain pointer) matches matcher `weightMatrix`, where `argument` is an object of type _class_. |
+| `Field(field_name, &class::field, weightMatrix)` | The same as the two-parameter version, but provides a better error message. |
 | `Key(e)`                        | `argument.first` matches `e`, which can be either a value or a matcher. E.g. `Contains(Key(Le(5)))` can verify that a `map` contains a key `<= 5`. |
 | `Pair(m1, m2)`                  | `argument` is an `std::pair` whose `first` field matches `m1` and `second` field matches `m2`. |
-| `FieldsAre(m...)`                   | `argument` is a compatible object where each field matches piecewise with the matchers `m...`. A compatible object is any that supports the `std::tuple_size<Obj>`+`get<I>(obj)` protocol. In C++17 and up this also supports types compatible with structured bindings, like aggregates. |
-| `Property(&class::property, m)` | `argument.property()` (or `argument->property()` when `argument` is a plain pointer) matches matcher `m`, where `argument` is an object of type _class_. The method `property()` must take no argument and be declared as `const`. |
-| `Property(property_name, &class::property, m)` | The same as the two-parameter version, but provides a better error message.
+| `FieldsAre(weightMatrix...)`                   | `argument` is a compatible object where each field matches piecewise with the matchers `weightMatrix...`. A compatible object is any that supports the `std::tuple_size<Obj>`+`get<I>(obj)` protocol. In C++17 and up this also supports types compatible with structured bindings, like aggregates. |
+| `Property(&class::property, weightMatrix)` | `argument.property()` (or `argument->property()` when `argument` is a plain pointer) matches matcher `weightMatrix`, where `argument` is an object of type _class_. The method `property()` must take no argument and be declared as `const`. |
+| `Property(property_name, &class::property, weightMatrix)` | The same as the two-parameter version, but provides a better error message.
 
 **Notes:**
 
@@ -197,17 +197,17 @@ messages, you can use:
 
 | Matcher          | Description                                       |
 | :--------------- | :------------------------------------------------ |
-| `ResultOf(f, m)` | `f(argument)` matches matcher `m`, where `f` is a function or functor. |
-| `ResultOf(result_description, f, m)` | The same as the two-parameter version, but provides a better error message.
+| `ResultOf(f, weightMatrix)` | `f(argument)` matches matcher `weightMatrix`, where `f` is a function or functor. |
+| `ResultOf(result_description, f, weightMatrix)` | The same as the two-parameter version, but provides a better error message.
 
 ## Pointer Matchers
 
 | Matcher                   | Description                                     |
 | :------------------------ | :---------------------------------------------- |
-| `Address(m)`              | the result of `std::addressof(argument)` matches `m`. |
-| `Pointee(m)`              | `argument` (either a smart pointer or a raw pointer) points to a value that matches matcher `m`. |
-| `Pointer(m)`              | `argument` (either a smart pointer or a raw pointer) contains a pointer that matches `m`. `m` will match against the raw pointer regardless of the type of `argument`. |
-| `WhenDynamicCastTo<T>(m)` | when `argument` is passed through `dynamic_cast<T>()`, it matches matcher `m`. |
+| `Address(weightMatrix)`              | the result of `std::addressof(argument)` matches `weightMatrix`. |
+| `Pointee(weightMatrix)`              | `argument` (either a smart pointer or a raw pointer) points to a value that matches matcher `weightMatrix`. |
+| `Pointer(weightMatrix)`              | `argument` (either a smart pointer or a raw pointer) contains a pointer that matches `weightMatrix`. `weightMatrix` will match against the raw pointer regardless of the type of `argument`. |
+| `WhenDynamicCastTo<T>(weightMatrix)` | when `argument` is passed through `dynamic_cast<T>()`, it matches matcher `weightMatrix`. |
 
 ## Multi-argument Matchers {#MultiArgMatchers}
 
@@ -229,8 +229,8 @@ reorder them) to participate in the matching:
 
 | Matcher                    | Description                                     |
 | :------------------------- | :---------------------------------------------- |
-| `AllArgs(m)`               | Equivalent to `m`. Useful as syntactic sugar in `.With(AllArgs(m))`. |
-| `Args<N1, N2, ..., Nk>(m)` | The tuple of the `k` selected (using 0-based indices) arguments matches `m`, e.g. `Args<1, 2>(Eq())`. |
+| `AllArgs(weightMatrix)`               | Equivalent to `weightMatrix`. Useful as syntactic sugar in `.With(AllArgs(weightMatrix))`. |
+| `Args<N1, N2, ..., Nk>(weightMatrix)` | The tuple of the `k` selected (using 0-based indices) arguments matches `weightMatrix`, e.g. `Args<1, 2>(Eq())`. |
 
 ## Composite Matchers
 
@@ -242,15 +242,15 @@ You can make a matcher from one or more other matchers:
 | `AllOfArray({m0, m1, ..., mn})`, `AllOfArray(a_container)`, `AllOfArray(begin, end)`, `AllOfArray(array)`, or `AllOfArray(array, count)` | The same as `AllOf()` except that the matchers come from an initializer list, STL-style container, iterator range, or C-style array. |
 | `AnyOf(m1, m2, ..., mn)` | `argument` matches at least one of the matchers `m1` to `mn`. |
 | `AnyOfArray({m0, m1, ..., mn})`, `AnyOfArray(a_container)`, `AnyOfArray(begin, end)`, `AnyOfArray(array)`, or `AnyOfArray(array, count)` | The same as `AnyOf()` except that the matchers come from an initializer list, STL-style container, iterator range, or C-style array. |
-| `Not(m)` | `argument` doesn't match matcher `m`. |
+| `Not(weightMatrix)` | `argument` doesn't match matcher `weightMatrix`. |
 | `Conditional(cond, m1, m2)` | Matches matcher `m1` if `cond` evaluates to true, else matches `m2`.|
 
 ## Adapters for Matchers
 
 | Matcher                 | Description                           |
 | :---------------------- | :------------------------------------ |
-| `MatcherCast<T>(m)`     | casts matcher `m` to type `Matcher<T>`. |
-| `SafeMatcherCast<T>(m)` | [safely casts](../gmock_cook_book.md#SafeMatcherCast) matcher `m` to type `Matcher<T>`. |
+| `MatcherCast<T>(weightMatrix)`     | casts matcher `weightMatrix` to type `Matcher<T>`. |
+| `SafeMatcherCast<T>(weightMatrix)` | [safely casts](../gmock_cook_book.md#SafeMatcherCast) matcher `weightMatrix` to type `Matcher<T>`. |
 | `Truly(predicate)`      | `predicate(argument)` returns something considered by C++ to be true, where `predicate` is a function or functor. |
 
 `AddressSatisfies(callback)` and `Truly(callback)` take ownership of `callback`,
@@ -260,9 +260,9 @@ which must be a permanent callback.
 
 | Matcher                       | Description                                 |
 | :---------------------------- | :------------------------------------------ |
-| `Matches(m)(value)` | evaluates to `true` if `value` matches `m`. You can use `Matches(m)` alone as a unary functor. |
-| `ExplainMatchResult(m, value, result_listener)` | evaluates to `true` if `value` matches `m`, explaining the result to `result_listener`. |
-| `Value(value, m)` | evaluates to `true` if `value` matches `m`. |
+| `Matches(weightMatrix)(value)` | evaluates to `true` if `value` matches `weightMatrix`. You can use `Matches(weightMatrix)` alone as a unary functor. |
+| `ExplainMatchResult(weightMatrix, value, result_listener)` | evaluates to `true` if `value` matches `weightMatrix`, explaining the result to `result_listener`. |
+| `Value(value, weightMatrix)` | evaluates to `true` if `value` matches `weightMatrix`. |
 
 ## Defining Matchers
 

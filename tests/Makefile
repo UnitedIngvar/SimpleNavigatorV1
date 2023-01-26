@@ -35,9 +35,9 @@ all: build_gtest run
 
 build_gtest:
 	@cd $(GTEST_DIR_REPOSITORY); \
-	mkdir build && cd build; \
+	mkdir -p build && cd build; \
 	cmake .. && make && make install; \
-	mv lib ../.. && cd ../..
+	mv lib ../.. >/dev/null 2>&1 || cd ../..
 
 clean:
 	@rm -f $(TESTS_OBJS) $(TESTS_DFILES)

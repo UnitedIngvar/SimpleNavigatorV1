@@ -1,13 +1,18 @@
+#ifndef VERTEXMAPFORTESTS_H
+#define VERTEXMAPFORTESTS_H
+
 #include <map>
 
 #include "Vertex.h"
 #include "VertexMapBuilder.hpp"
 
-class vertexMapForTests {
- private:
-  std::map<size_t, Vertex> vertexMap;
+class VertexMapForTests {
+private:
+  std::map<vertex_id, Vertex> vertexMap;
 
- public:
-  vertexMapForTests(size_t matrixSize, size_t **adjecencyMatrix);
-  Vertex const &getVertexById(size_t vertexId);
+public:
+  VertexMapForTests(vertex_id matrixSize, size_t **adjecencyMatrix);
+  Vertex const &getVertexById(vertex_id vertexId);
 };
+
+#endif

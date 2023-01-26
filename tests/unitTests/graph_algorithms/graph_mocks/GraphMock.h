@@ -5,7 +5,7 @@
 #include "gmock.h"
 
 class GraphMock : public IGraph {
- public:
+public:
   ~GraphMock() override = default;
 
   MOCK_METHOD(void, loadGraphFromFile, (std::string const &filename),

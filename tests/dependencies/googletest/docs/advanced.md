@@ -1239,8 +1239,8 @@ types.
 
 While you can write one `TEST` or `TEST_F` for each type you want to test (and
 you may even factor the test logic into a function template that you invoke from
-the `TEST`), it's tedious and doesn't scale: if you want `m` tests over `n`
-types, you'll end up writing `m*n` `TEST`s.
+the `TEST`), it's tedious and doesn't scale: if you want `weightMatrix` tests over `n`
+types, you'll end up writing `weightMatrix*n` `TEST`s.
 
 *Typed tests* allow you to repeat the same test logic over a list of types. You
 only need to write the test logic once, although you must know the type list
