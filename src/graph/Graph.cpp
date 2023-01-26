@@ -42,7 +42,7 @@ Vertex	const &Graph::getVertexById(vertex_id vertexId) const
 	if (_vertexMap.find(vertexId) == _vertexMap.end())
 	{
 		throw std::out_of_range("vertex index " + std::to_string(vertexId) +
-		" is not present in the adjecency matrix");
+								" is not present in the adjecency matrix");
 	}
 
 	return _vertexMap.at(vertexId);

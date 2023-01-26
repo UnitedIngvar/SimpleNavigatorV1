@@ -5,8 +5,9 @@
 #include <fstream>
 #include <map>
 #include "Vertex.h"
+#include "IGraph.h"
 
-class Graph
+class Graph : public IGraph
 {
 private:
 	size_t						_matrixSize;
@@ -15,7 +16,7 @@ private:
 	bool						_matrixInitialized;
 
 public:
-	Graph();
+	Graph() {}
 
 	void			loadGraphFromFile(std::string const &filename);
 	void			exportGraphToDot(std::string const &filename);

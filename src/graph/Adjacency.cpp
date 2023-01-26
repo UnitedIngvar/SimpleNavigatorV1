@@ -2,8 +2,8 @@
 #include "Vertex.h"
 
 Adjacency::Adjacency(Vertex const &vertex, size_t weight):
-	_vertex(vertex),
-	_weight(weight)
+		_vertex(vertex),
+		_weight(weight)
 {
 
 }
@@ -21,6 +21,6 @@ size_t			Adjacency::getWeight() const
 bool	Adjacency::operator==(Adjacency const &other) const
 {
 	return
-		other.getVertex() == this->getVertex() &&
-		other.getWeight() == this->getWeight();
+			other.getVertex() == this->getVertex() &&
+			other.getWeight() == this->getWeight();
 }
