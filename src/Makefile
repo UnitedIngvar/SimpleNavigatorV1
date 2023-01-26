@@ -2,7 +2,8 @@ NAME					= greph
 
 DIR						= .
 HEADERS_DIR				= includes/
-INCLUDES				= -I$(HEADERS_DIR)
+INTERFACES_DIR			= interfaces/
+INCLUDES				= -I$(HEADERS_DIR) -I$(INTERFACES_DIR)
 SRCS					= $(shell find $(DIR) -name "*.cpp")
 OBJECTS					= $(patsubst %.cpp, %.o, $(SRCS))
 D_FILES					= ${patsubst %.cpp, %.d, ${SRCS}}

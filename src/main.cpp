@@ -1,6 +1,7 @@
-#include "s21_graph.h"
-
-int main(void)
-{
-	
-}
+//#include "gmock.h"
+//#include "gtest.h"
+//
+//int main() {
+//  testing::InitGoogleTest();
+//  RUN_ALL_TESTS();
+//}
