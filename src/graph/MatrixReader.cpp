@@ -20,7 +20,6 @@ size_t	MatrixReader::readNextNumberOrThrow(std::string const &line, size_t *offs
 	{
 		throw std::invalid_argument(notFoundErrorMessage);
 	}
-
 	// Получаем длину числа
 	size_t positionAfterNumber = line.find_first_not_of(digits, numberPosition);
 	size_t numberLength = positionAfterNumber == std::string::npos
