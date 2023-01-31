@@ -11,7 +11,6 @@ private:
   std::map<vertex_id, Vertex> vertexMap;
 
 public:
-  VertexMapForTests() {}
   VertexMapForTests(vertex_id matrixSize, size_t **adjecencyMatrix);
   Vertex const &getVertexById(vertex_id vertexId);
 };
