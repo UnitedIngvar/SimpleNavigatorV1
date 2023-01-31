@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <queue>
+#include <stack>
 #include <unordered_set>
 
 #include "s21_graph_algorithms.h"
@@ -6,9 +8,35 @@
 // поиск в глубину (без рекурсии) DFS (обход всего графа от стартовой вершины)
 std::vector<vertex_id> GraphAlgorithms::depthFirstSearch(IGraph &graph,
                                                          int startVertex) {
-  std::vector<vertex_id> traversedVertices = {1, 2, 3};
-  (void)graph;
-  (void)startVertex;
+  std::vector<vertex_id> traversedVertices;
+
+  std::stack<vertex_id> unvisitedVerticesStack;
+  unvisitedVerticesStack.push(startVertex);
+
+  std::unordered_set<vertex_id> visitedVerticesSet;
+
+  while (!unvisitedVerticesStack.empty()) {
+    vertex_id from =
+        unvisitedVerticesStack.top();
+    unvisitedVerticesStack.pop();
+    if (visitedVerticesSet.count(from) == 1) {
+      continue;
+    }
+
+    traversedVertices.push_back(from);
+    visitedVerticesSet.insert(from);
+
+    std::vector<Adjacency> adjacencies =
+        graph.getVertexById(from).getAdjacencies();
+    for (int i = int(adjacencies.size()) - 1; i >= 0; i--) {
+      const Adjacency &adjacency = adjacencies[i];
+      vertex_id to = adjacency.getVertex().getId();
+      if (visitedVerticesSet.count(to) == 0) {
+        unvisitedVerticesStack.push(to);
+      }
+    }
+  }
+
   return traversedVertices;
 }
 

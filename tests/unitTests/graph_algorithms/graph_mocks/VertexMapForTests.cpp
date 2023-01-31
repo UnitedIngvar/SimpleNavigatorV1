@@ -1,7 +1,7 @@
 #include "VertexMapForTests.h"
 
 VertexMapForTests::VertexMapForTests(vertex_id matrixSize,
-									 size_t **adjecencyMatrix) {
+                                     size_t **adjecencyMatrix) {
   VertexMapBuilder vertexMapBuilder;
   vertexMap = vertexMapBuilder.buildVertexesMap(adjecencyMatrix, matrixSize);
 

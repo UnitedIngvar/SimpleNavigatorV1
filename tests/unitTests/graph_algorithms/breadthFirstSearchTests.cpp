@@ -11,7 +11,7 @@ using ::testing::Return;
 using ::testing::ReturnRef;
 
 struct breadthFirstSearchTests : public testing::Test {
-  vertex_id **weightMatrix{};
+  weight **weightMatrix{};
   NiceMock<GraphMock> graphMock;
   GraphAlgorithms graphAlgorithms;
 
