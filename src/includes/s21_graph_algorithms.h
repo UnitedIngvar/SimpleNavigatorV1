@@ -3,12 +3,12 @@
 
 #include "s21_graph.h"
 
-typedef int distance;
+typedef size_t distance;
 typedef size_t weight;
 
 class GraphAlgorithms {
  public:
-  GraphAlgorithms() {}
+  GraphAlgorithms() = default;
 
   std::vector<vertex_id> depthFirstSearch(IGraph &graph, int startVertex);
 
@@ -16,7 +16,9 @@ class GraphAlgorithms {
 
   distance getShortestPathBetweenVertices(IGraph &graph, int vertex1, int vertex2);
 
-  ~GraphAlgorithms() {}
+  distance **getShortestPathsBetweenAllVertices(IGraph &graph);
+
+  ~GraphAlgorithms() = default;
 };
 
 #endif

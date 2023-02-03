@@ -16,8 +16,7 @@ std::vector<vertex_id> GraphAlgorithms::depthFirstSearch(IGraph &graph,
   std::unordered_set<vertex_id> visitedVerticesSet;
 
   while (!unvisitedVerticesStack.empty()) {
-    vertex_id from =
-        unvisitedVerticesStack.top();
+    vertex_id from = unvisitedVerticesStack.top();
     unvisitedVerticesStack.pop();
     if (visitedVerticesSet.count(from) == 1) {
       continue;
@@ -88,7 +87,7 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
 
     for (vertex_id vertexId = 1; vertexId < sizeGraphOneIndexing; vertexId++) {
       if (visitedVerticesSet.count(vertexId) == 0 &&
-          distances[vertexId] < (int)minWeight) {
+          distances[vertexId] < minWeight) {
         minVertexId = vertexId;
         minWeight = distances[vertexId];
       }
@@ -99,8 +98,8 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
           graph.getVertexById(minVertexId).getAdjacencies();
       for (Adjacency adjacency : adjacencies) {
         vertex_id to = adjacency.getVertex().getId();
-        if ((int)(minWeight + adjacency.getWeight()) < distances[to]) {
-          distances[to] = (int)(minWeight + adjacency.getWeight());
+        if (minWeight + adjacency.getWeight() < distances[to]) {
+          distances[to] = minWeight + adjacency.getWeight();
         }
       }
       visitedVerticesSet.insert(minVertexId);
@@ -108,4 +107,42 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
   }
 
   return distances[vertex2] - distances[vertex1];
+}
+
+// алгоритм Флойда-Уоршелла (поиск кратчайших путей между всеми парами вершин во
+// взвешенном графе с положительным или отрицательным весом ребер (но без
+// отрицательных циклов))
+distance **GraphAlgorithms::getShortestPathsBetweenAllVertices(IGraph &graph) {
+  distance sizeGraph = (int)graph.getMatrixSize();
+  weight **adjacencyMatrix = graph.getAdjacencyMatrix();
+
+  distance **distances = new distance *[sizeGraph];
+  for (distance i = 0; i < sizeGraph; i++) {
+    distances[i] = new distance[sizeGraph];
+    distances[i] = adjacencyMatrix[i];
+    for (distance j = 0; j < sizeGraph; j++) {
+      if (i != j && distances[i][j] == 0) {
+        distances[i][j] = INT_MAX;
+      }
+    }
+  }
+
+  // идем по всем вершинам и ищем более короткий путь через вершину k
+  for (vertex_id k = 0; k < sizeGraph; k++) {
+    for (vertex_id i = 0; i < sizeGraph; i++) {
+      for (vertex_id j = 0; j < sizeGraph; j++) {
+        if (distances[i][k] == INT_MAX ||
+            distances[k][j] == INT_MAX) {  // защита от переполнения
+          distances[i][j] = distances[i][j];
+        } else {
+          // Новое значение ребра равно минимальному между старым ребром и
+          // суммой ребер
+          distances[i][j] =
+              std::min(distances[i][j], distances[i][k] + distances[k][j]);
+        }
+      }
+    }
+  }
+
+  return distances;
 }
