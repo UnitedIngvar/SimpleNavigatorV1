@@ -10,10 +10,10 @@
 class Graph : public IGraph
 {
 private:
-	size_t						_matrixSize;
-	size_t						**_adjecencyMatrix;
-	std::map<vertex_id, Vertex>	_vertexMap;
-	bool						_matrixInitialized;
+	int								_matrixSize;
+	weight							**_adjecencyMatrix;
+	std::map<vertex_id, Vertex*>	_vertexMap;
+	bool							_matrixInitialized;
 
 public:
 	Graph() {}
@@ -22,8 +22,8 @@ public:
 	void			exportGraphToDot(std::string const &filename);
 
 	Vertex const	&getVertexById(vertex_id vertexId) const;
-	size_t			getMatrixSize() const;
-	size_t			**getAdjacencyMatrix() const;
+	int				getMatrixSize() const;
+	weight			**getAdjacencyMatrix() const;
 
 	~Graph();
 };

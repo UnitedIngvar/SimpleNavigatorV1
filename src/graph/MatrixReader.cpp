@@ -1,10 +1,9 @@
 #include "MatrixReader.h"
 #include "Constants.h"
-#include <iostream>
 
 // TODO: ВАЖНО! Может ли вес быть отрицательным?
 
-size_t	MatrixReader::readNextNumberOrThrow(std::string const &line, size_t *offset, std::string const &notFoundErrorMessage)
+int	MatrixReader::readNextNumberOrThrow(std::string const &line, size_t *offset, std::string const &notFoundErrorMessage)
 {
 	// Проверяем, что в строке только числа
 	if (!std::all_of(line.begin(), line.end(),
@@ -20,25 +19,25 @@ size_t	MatrixReader::readNextNumberOrThrow(std::string const &line, size_t *offs
 	{
 		throw std::invalid_argument(notFoundErrorMessage);
 	}
+
 	// Получаем длину числа
 	size_t positionAfterNumber = line.find_first_not_of(digits, numberPosition);
-	size_t numberLength = positionAfterNumber == std::string::npos
+	int numberLength = positionAfterNumber == std::string::npos
 		? line.size() - numberPosition
 		: positionAfterNumber - numberPosition;
 
 	// Получаем строку, содержащую число
 	std::string numberStr = line.substr(numberPosition, numberLength);
-	//std::cout << "numberPosition" << std::endl;
 
 	// TODO: хорошо бы придумать что-то поэлегантнее
-	size_t number;
+	int number;
 	try
 	{
-		number = std::stoul(numberStr);
+		number = std::stoi(numberStr);
 	}
 	catch(const std::exception& e)
 	{
-		throw std::invalid_argument(numberStr + " is more than maximum value of size_t number");
+		throw std::invalid_argument(numberStr + " is more than maximum value of int number");
 	}
 
 	if (number < 0)
@@ -51,10 +50,10 @@ size_t	MatrixReader::readNextNumberOrThrow(std::string const &line, size_t *offs
 	return number;
 }
 
-size_t	MatrixReader::readMatrixSize(std::ifstream &file)
+int	MatrixReader::readMatrixSize(std::ifstream &file)
 {
 	std::string line;
-	size_t matrixSize;
+	int matrixSize;
 	bool matrixSizeFound = false;
 
 	while (getline(file, line))
@@ -75,10 +74,10 @@ size_t	MatrixReader::readMatrixSize(std::ifstream &file)
 			throw std::invalid_argument("Matrix size can't be less or equal to '0'");
 		}
 
-		// Бросаем исключение, если есть какое-то число после размера матрицы.
+		// Бросаем исключение, если есть что-то после размера матрицы.
 		if (line.find_first_not_of(' ', offset) != std::string::npos)
 		{
-			throw std::invalid_argument("Invalid format of adjecency matrix");
+			throw std::invalid_argument("Invalid format of adjecency matrix: matrix size line is invalid");
 		}
 
 		matrixSizeFound = true;
@@ -93,15 +92,15 @@ size_t	MatrixReader::readMatrixSize(std::ifstream &file)
 	return matrixSize;
 }
 
-size_t	**MatrixReader::readAdjacencyMatrix(std::ifstream &file, size_t const matrixSize)
+weight	**MatrixReader::readAdjacencyMatrix(std::ifstream &file, int const matrixSize)
 {
-	size_t **matrix = new size_t*[matrixSize];
-	for (size_t i = 0; i < matrixSize; i++)
+	weight **matrix = new weight*[matrixSize];
+	for (int i = 0; i < matrixSize; i++)
 	{
-		matrix[i] = new size_t[matrixSize];
+		matrix[i] = new weight[matrixSize];
 	}
 
-	for (size_t i = 0; i < matrixSize; i++)
+	for (int i = 0; i < matrixSize; i++)
 	{
 		size_t offset = 0;
 		if (file.peek() == EOF)
@@ -111,9 +110,9 @@ size_t	**MatrixReader::readAdjacencyMatrix(std::ifstream &file, size_t const mat
 
 		std::string line;
 		getline(file, line);
-		for (size_t j = 0; j < matrixSize; j++)
+		for (int j = 0; j < matrixSize; j++)
 		{
-			size_t number = readNextNumberOrThrow(
+			weight number = readNextNumberOrThrow(
 				line,
 				&offset,
 				"invalid number of columns in the adjecency matrix");

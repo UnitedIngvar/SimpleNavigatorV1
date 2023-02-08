@@ -4,7 +4,6 @@
 #include "s21_graph.h"
 
 typedef int distance;
-typedef size_t weight;
 
 class GraphAlgorithms {
  public:

@@ -1,35 +1,34 @@
-#include "VertexMapBuilder.hpp"
+#include "VertexMapBuilder.h"
 
-std::map<vertex_id, Vertex> VertexMapBuilder::buildVertexesMap(size_t **adjacencyMatrix, size_t matrixSize)
+std::map<vertex_id, Vertex*> VertexMapBuilder::buildVertexesMap(weight **adjacencyMatrix, int matrixSize)
 {
-	std::vector<Vertex> vertexes;
+	std::vector<Vertex*> vertices;
 
 	for (vertex_id vertexId = 1;
-		vertexId < matrixSize + 1;
+		vertexId <= matrixSize + 1;
 		vertexId++)
 	{
-		vertexes.push_back(Vertex(vertexId));
+		vertices.push_back(new Vertex(vertexId));
 	}
 
-	for (size_t i = 0; i < matrixSize; i++)
+	for (int i = 0; i < matrixSize; i++)
 	{
-		Vertex currentVertex = vertexes[i];
+		Vertex *currentVertex = vertices[i];
 
-		for (size_t j = 0; j < matrixSize; j++)
+		for (int j = 0; j < matrixSize; j++)
 		{
-			if (j == i || adjacencyMatrix[i][j] == 0)
+			if (adjacencyMatrix[i][j] == 0)
 				continue;
 
-			Adjacency adjacency(vertexes[j], adjacencyMatrix[i][j]);
-			currentVertex.addAdjacency(adjacency);
+			currentVertex->addAdjacency(Adjacency(*(vertices[j]), adjacencyMatrix[i][j]));
 		}
 	}
 
-	std::map<vertex_id, Vertex> vertexMap;
+	std::map<vertex_id, Vertex*> vertexMap;
 
-	for (Vertex vertex : vertexes)
+	for (Vertex *vertex : vertices)
 	{
-		vertexMap.insert({vertex.getId(), vertex});
+		vertexMap.insert({vertex->getId(), vertex});
 	}
 
 	return vertexMap;
