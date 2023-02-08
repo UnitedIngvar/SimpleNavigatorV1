@@ -68,9 +68,6 @@ TEST(VertexMapBuilderTests, BuildVertexesMap)
 
 	for (vertex_id i = 1; i <= size; i++)
 	{
-		EXPECT_EQ(*(vertexMap.at(i)), expectedVertexMap.at(i)) << "Actual: " << std::endl
-			<< vertexMap.at(i)
-			<< "Expected: " << std::endl
-			<< expectedVertexMap.at(i);
+		EXPECT_EQ(*(vertexMap.at(i)), expectedVertexMap.at(i));
 	}
 }
