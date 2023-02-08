@@ -1,6 +1,5 @@
 #include "gtest.h"
 #include "MatrixReader.h"
-#include <fstream>
 #include <filesystem>
 #include <functional>
 
@@ -19,7 +18,7 @@ TEST(MatrixReaderTests, ReadMatrixSize_WithExmapleMap)
 	auto actualMatrixSize = matrixReader.readMatrixSize(file);
 
 	// Assert
-	size_t expectedMatrixSize = 11;
+	int expectedMatrixSize = 11;
 	ASSERT_EQ(actualMatrixSize, expectedMatrixSize);
 }
 
@@ -36,7 +35,7 @@ TEST(MatrixReaderTests, ReadMatrixSize_WithMultipleEmptyRowsBeforeMatrixSize)
 	auto actualMatrixSize = matrixReader.readMatrixSize(file);
 
 	// Assert
-	size_t expectedMatrixSize = 11;
+	int expectedMatrixSize = 11;
 	ASSERT_EQ(actualMatrixSize, expectedMatrixSize);
 }
 
@@ -53,7 +52,7 @@ TEST(MatrixReaderTests, ReadMatrixSize_WithMultipleEmptyRowsAfterMatrixSize_Retu
 	auto actualMatrixSize = matrixReader.readMatrixSize(file);
 
 	// Assert
-	size_t expectedMatrixSize = 11;
+	int expectedMatrixSize = 11;
 	ASSERT_EQ(actualMatrixSize, expectedMatrixSize);
 }
 
@@ -70,7 +69,7 @@ TEST(MatrixReaderTests, ReadMatrixSize_WithWhiteSpacesBeforeMatrixSize_ReturnsVa
 	auto actualMatrixSize = matrixReader.readMatrixSize(file);
 
 	// Assert
-	size_t expectedMatrixSize = 11;
+	int expectedMatrixSize = 11;
 	ASSERT_EQ(actualMatrixSize, expectedMatrixSize);
 }
 
@@ -157,7 +156,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithExmapleMap)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 11;
+	int matrixSize = 11;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -167,7 +166,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithExmapleMap)
 	auto actualMatrix = matrixReader.readAdjacencyMatrix(file, matrixSize);
 
 	// Assert
-	size_t expectedMatrix[11][11] =
+	weight expectedMatrix[11][11] =
 	{
 		{ 0,   29,  20,  21,  16,  31,  100, 12,  4,   31,  18 },
 		{ 29,  0,   15,  29,  28,  40,  72,  21,  29,  41,  12 },
@@ -182,9 +181,9 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithExmapleMap)
 		{ 18,  12,  13,  25,  22,  37,  84,  13,  18,  38,  0 }
 	};
 
-	for (size_t i = 0; i < matrixSize; i++)
+	for (int i = 0; i < matrixSize; i++)
 	{
-		for (size_t j = 0; j < matrixSize; j++)
+		for (int j = 0; j < matrixSize; j++)
 		{
 			ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
 		}
@@ -199,7 +198,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithUnalignedColumns)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 11;
+	int matrixSize = 11;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -209,7 +208,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithUnalignedColumns)
 	auto actualMatrix = matrixReader.readAdjacencyMatrix(file, matrixSize);
 
 	// Assert
-	size_t expectedMatrix[11][11] =
+	weight expectedMatrix[11][11] =
 	{
 		{ 0,   29,  20,  21,  16,  31,  100, 12,  4,   31,  18 },
 		{ 29,  0,   15,  29,  28,  40,  72,  21,  29,  41,  12 },
@@ -224,9 +223,9 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithUnalignedColumns)
 		{ 18,  12,  13,  25,  22,  37,  84,  13,  18,  38,  0 }
 	};
 
-	for (size_t i = 0; i < matrixSize; i++)
+	for (int i = 0; i < matrixSize; i++)
 	{
-		for (size_t j = 0; j < matrixSize; j++)
+		for (int j = 0; j < matrixSize; j++)
 		{
 			ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
 		}
@@ -241,7 +240,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithSelfAdjacentVertexes)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 11;
+	int matrixSize = 11;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -251,7 +250,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithSelfAdjacentVertexes)
 	auto actualMatrix = matrixReader.readAdjacencyMatrix(file, matrixSize);
 
 	// Assert
-	size_t expectedMatrix[11][11] =
+	weight expectedMatrix[11][11] =
 	{
 		{ 1,   29,  20,  21,  16,  31,  100, 12,  4,   31,  18 },
 		{ 29,  2,   15,  29,  28,  40,  72,  21,  29,  41,  12 },
@@ -266,9 +265,9 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithSelfAdjacentVertexes)
 		{ 18,  12,  13,  25,  22,  37,  84,  13,  18,  38,  11 }
 	};
 
-	for (size_t i = 0; i < matrixSize; i++)
+	for (int i = 0; i < matrixSize; i++)
 	{
-		for (size_t j = 0; j < matrixSize; j++)
+		for (int j = 0; j < matrixSize; j++)
 		{
 			ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
 		}
@@ -283,7 +282,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddColumns)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 11;
+	int matrixSize = 11;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -293,7 +292,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddColumns)
 	auto actualMatrix = matrixReader.readAdjacencyMatrix(file, matrixSize);
 
 	// Assert
-	size_t expectedMatrix[11][11] =
+	weight expectedMatrix[11][11] =
 	{
 		{ 0,   29,  20,  21,  16,  31,  100, 12,  4,   31,  18 },
 		{ 29,  0,   15,  29,  28,  40,  72,  21,  29,  41,  12 },
@@ -308,9 +307,9 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddColumns)
 		{ 18,  12,  13,  25,  22,  37,  84,  13,  18,  38,  0 }
 	};
 
-	for (size_t i = 0; i < matrixSize; i++)
+	for (int i = 0; i < matrixSize; i++)
 	{
-		for (size_t j = 0; j < matrixSize; j++)
+		for (int j = 0; j < matrixSize; j++)
 		{
 			ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
 		}
@@ -325,7 +324,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddRows)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 11;
+	int matrixSize = 11;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -335,7 +334,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddRows)
 	auto actualMatrix = matrixReader.readAdjacencyMatrix(file, matrixSize);
 
 	// Assert
-	size_t expectedMatrix[11][11] =
+	weight expectedMatrix[11][11] =
 	{
 		{ 0,   29,  20,  21,  16,  31,  100, 12,  4,   31,  18 },
 		{ 29,  0,   15,  29,  28,  40,  72,  21,  29,  41,  12 },
@@ -350,9 +349,9 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddRows)
 		{ 18,  12,  13,  25,  22,  37,  84,  13,  18,  38,  0 }
 	};
 
-	for (size_t i = 0; i < matrixSize; i++)
+	for (int i = 0; i < matrixSize; i++)
 	{
-		for (size_t j = 0; j < matrixSize; j++)
+		for (int j = 0; j < matrixSize; j++)
 		{
 			ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
 		}
@@ -367,7 +366,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithSingleElement)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 1;
+	int matrixSize = 1;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -377,14 +376,14 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithSingleElement)
 	auto actualMatrix = matrixReader.readAdjacencyMatrix(file, matrixSize);
 
 	// Assert
-	size_t expectedMatrix[1][1] =
+	weight expectedMatrix[1][1] =
 	{
 		{ 100 }
 	};
 
-	for (size_t i = 0; i < matrixSize; i++)
+	for (int i = 0; i < matrixSize; i++)
 	{
-		for (size_t j = 0; j < matrixSize; j++)
+		for (int j = 0; j < matrixSize; j++)
 		{
 			ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
 		}
@@ -399,7 +398,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_MatrixWithFourElements)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 4;
+	int matrixSize = 4;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -409,7 +408,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_MatrixWithFourElements)
 	auto actualMatrix = matrixReader.readAdjacencyMatrix(file, matrixSize);
 
 	// Assert
-	size_t expectedMatrix[4][4] =
+	weight expectedMatrix[4][4] =
 	{
 		{ 0,   29,  20,  21 },
 		{ 29,  0,   15,  29 },
@@ -417,9 +416,9 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_MatrixWithFourElements)
 		{ 21,  29,  15,  0  }
 	};
 
-	for (size_t i = 0; i < matrixSize; i++)
+	for (int i = 0; i < matrixSize; i++)
 	{
-		for (size_t j = 0; j < matrixSize; j++)
+		for (int j = 0; j < matrixSize; j++)
 		{
 			ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
 		}
@@ -434,7 +433,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithEmtpyLines)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 11;
+	int matrixSize = 11;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -454,7 +453,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithMultipleShorterRows)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 11;
+	int matrixSize = 11;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -474,7 +473,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithSingleShorterRow)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 11;
+	int matrixSize = 11;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)
@@ -494,27 +493,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithInsufficientColumnAmount)
 	file.open(pathToFile);
 	ASSERT_TRUE(file);
 	MatrixReader matrixReader;
-	size_t matrixSize = 11;
-
-	std::string line;
-	// Пропускаем размер матрицы (нам он известен из файла)
-	getline(file, line);
-
-	// Act
-
-	// Assert
-	ASSERT_THROW(matrixReader.readAdjacencyMatrix(file, matrixSize), std::invalid_argument);
-}
-
-TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithInsufficientColumnAmount)
-{
-	// Arrange
-	const std::string pathToFile = "./unitTests/graph/testData/InvalidMatrixWithInsufficientColumnAmount.txt";
-	std::ifstream file;
-	file.open(pathToFile);
-	ASSERT_TRUE(file);
-	MatrixReader matrixReader;
-	size_t matrixSize = 11;
+	int matrixSize = 11;
 
 	std::string line;
 	// Пропускаем размер матрицы (нам он известен из файла)

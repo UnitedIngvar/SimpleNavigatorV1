@@ -12,10 +12,10 @@ public:
               (override));
   MOCK_METHOD(void, exportGraphToDot, (std::string const &filename),
               (override));
-  MOCK_METHOD(Vertex const &, getVertexById, (size_t vertexId),
+  MOCK_METHOD(Vertex const &, getVertexById, (vertex_id vertexId),
               (const, override));
-  MOCK_METHOD(size_t, getMatrixSize, (), (const, override));
-  MOCK_METHOD(size_t **, getAdjacencyMatrix, (), (const, override));
+  MOCK_METHOD(int, getMatrixSize, (), (const, override));
+  MOCK_METHOD(weight **, getAdjacencyMatrix, (), (const, override));
 };
 
 #endif
