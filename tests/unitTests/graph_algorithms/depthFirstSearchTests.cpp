@@ -15,9 +15,7 @@ struct depthFirstSearchTests : public testing::Test {
 
   void SetUp() {}
 
-  void TearDown() {
-	  delete[] weightMatrix;
-  }
+  void TearDown() { delete[] weightMatrix; }
 };
 
 TEST_F(depthFirstSearchTests, Graph5startFrom1) {

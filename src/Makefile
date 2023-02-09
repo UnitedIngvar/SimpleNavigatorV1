@@ -9,7 +9,7 @@ OBJECTS					= $(patsubst %.cpp, %.o, $(SRCS))
 D_FILES					= ${patsubst %.cpp, %.d, ${SRCS}}
 
 CC				= c++
-CFLAGS			=-Werror -Wall -Wextra -std=c++17
+CFLAGS			=-Werror -Wall -Wextra -std=c++17 #-fsanitize=address,undefined -fno-sanitize-recover -fstack-protector -g -O0
 
 all: $(NAME)
 

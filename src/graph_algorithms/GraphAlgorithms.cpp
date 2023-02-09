@@ -119,10 +119,15 @@ distance **GraphAlgorithms::getShortestPathsBetweenAllVertices(IGraph &graph) {
   distance **distances = new distance *[sizeGraph];
   for (distance i = 0; i < sizeGraph; i++) {
     distances[i] = new distance[sizeGraph];
-    distances[i] = adjacencyMatrix[i];
     for (distance j = 0; j < sizeGraph; j++) {
-      if (i != j && distances[i][j] == 0) {
-        distances[i][j] = INT_MAX;
+      distances[i][j] = (i == j ? 0 : INT_MAX);
+    }
+  }
+
+  for (distance i = 0; i < sizeGraph; i++) {
+    for (distance j = 0; j < sizeGraph; j++) {
+      if (adjacencyMatrix[i][j] != 0) {
+        distances[i][j] = std::min(distances[i][j], adjacencyMatrix[i][j]);
       }
     }
   }
@@ -131,9 +136,8 @@ distance **GraphAlgorithms::getShortestPathsBetweenAllVertices(IGraph &graph) {
   for (vertex_id k = 0; k < sizeGraph; k++) {
     for (vertex_id i = 0; i < sizeGraph; i++) {
       for (vertex_id j = 0; j < sizeGraph; j++) {
-        if (distances[i][k] == INT_MAX ||
-            distances[k][j] == INT_MAX) {  // защита от переполнения
-        } else {
+        // защита от переполнения
+        if (distances[i][k] != INT_MAX && distances[k][j] != INT_MAX) {
           // Новое значение ребра равно минимальному между старым ребром и
           // суммой ребер
           distances[i][j] =

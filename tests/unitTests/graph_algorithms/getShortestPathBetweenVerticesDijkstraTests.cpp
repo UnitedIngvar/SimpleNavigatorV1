@@ -9,14 +9,13 @@ using ::testing::Return;
 using ::testing::ReturnRef;
 
 struct getShortestPathBetweenVerticesDijkstraTests : public testing::Test {
-	weight **weightMatrix{};
-	NiceMock<GraphMock> graphMock;
-	GraphAlgorithms graphAlgorithms;
+  weight **weightMatrix{};
+  NiceMock<GraphMock> graphMock;
+  GraphAlgorithms graphAlgorithms;
 
-	void SetUp() {}
+  void SetUp() {}
 
-	void TearDown() { delete[] weightMatrix;
-	}
+  void TearDown() { delete[] weightMatrix; }
 };
 
 TEST_F(getShortestPathBetweenVerticesDijkstraTests, Graph5between1and5) {
