@@ -133,7 +133,6 @@ distance **GraphAlgorithms::getShortestPathsBetweenAllVertices(IGraph &graph) {
       for (vertex_id j = 0; j < sizeGraph; j++) {
         if (distances[i][k] == INT_MAX ||
             distances[k][j] == INT_MAX) {  // защита от переполнения
-          distances[i][j] = distances[i][j];
         } else {
           // Новое значение ребра равно минимальному между старым ребром и
           // суммой ребер

@@ -32,6 +32,38 @@ bool matrixComparer(int size, distance **matrix1, distance **matrix2) {
   return true;
 }
 
+TEST_F(getShortestPathsBetweenAllVerticesFloydTests, Graph4) {
+	// Arrange
+	weight matrix[4][4] = {{0, 0, -2, 0},
+						   {4, 0, 3, 0},
+						   {0, 0, 0, 2},
+						   {0, -1, 0, 0}};
+	distance matrix2[4][4] = {{0, -1, -2, 0},
+							  {4, 0, 2, 4},
+							  {5, 1, 0, 2},
+							  {3, -1, 1, 0}};
+	weightMatrix = new weight *[4];
+	ansMatrix = new distance *[4];
+
+	for (weight i = 0; i < 4; i++) {
+		weightMatrix[i] = new weight[4];
+		ansMatrix[i] = new distance[4];
+		weightMatrix[i] = matrix[i];
+		ansMatrix[i] = matrix2[i];
+	}
+
+	VertexMapForTests vertexMapForTests(4, weightMatrix);
+	EXPECT_CALL(graphMock, getMatrixSize()).WillOnce(Return(4));
+	EXPECT_CALL(graphMock, getAdjacencyMatrix()).WillOnce(Return(weightMatrix));
+
+	// Act
+	distance **shortestPathBetweenAllVertices =
+			graphAlgorithms.getShortestPathsBetweenAllVertices(graphMock);
+
+	// Assert
+	ASSERT_TRUE(matrixComparer(4, shortestPathBetweenAllVertices, ansMatrix));
+}
+
 TEST_F(getShortestPathsBetweenAllVerticesFloydTests, Graph5) {
   // Arrange
   weight matrix[5][5] = {{0, 10, 0, 5, 0},
