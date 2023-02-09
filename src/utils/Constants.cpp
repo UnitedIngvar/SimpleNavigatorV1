@@ -8,6 +8,6 @@ const char *Constants::getWhiteSpaces()
 
 const char *Constants::getDigits()
 {
-	static const char whiteSpaces[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+	static const char whiteSpaces[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 	return whiteSpaces;
 }

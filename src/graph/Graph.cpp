@@ -4,7 +4,7 @@
 #include "s21_graph.h"
 #include "Constants.h"
 #include "MatrixReader.h"
-#include "VertexMapBuilder.hpp"
+#include "VertexMapBuilder.h"
 
 void	Graph::loadGraphFromFile(std::string const &filename)
 {
@@ -45,15 +45,15 @@ Vertex	const &Graph::getVertexById(vertex_id vertexId) const
 								" is not present in the adjecency matrix");
 	}
 
-	return _vertexMap.at(vertexId);
+	return *(_vertexMap.at(vertexId));
 }
 
-size_t			Graph::getMatrixSize() const
+int			Graph::getMatrixSize() const
 {
 	return _matrixSize;
 }
 
-size_t			**Graph::getAdjacencyMatrix() const
+weight			**Graph::getAdjacencyMatrix() const
 {
 	return _adjecencyMatrix;
 }
@@ -63,9 +63,10 @@ Graph::~Graph()
 {
 	if (_matrixInitialized)
 	{
-		for (size_t i = 0; i < _matrixSize; i++)
+		for (int i = 0; i < _matrixSize; i++)
 		{
 			delete[] _adjecencyMatrix[i];
+			delete _vertexMap.at(i + 1);
 		}
 
 		delete[] _adjecencyMatrix;

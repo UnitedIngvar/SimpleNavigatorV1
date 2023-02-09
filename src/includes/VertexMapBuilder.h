@@ -7,9 +7,9 @@
 class VertexMapBuilder
 {
 public:
-	std::map<vertex_id, Vertex>	buildVertexesMap(
-		size_t **adjacencyMatrix,
-		size_t matrixSize);
+	std::map<vertex_id, Vertex*>	buildVertexesMap(
+		weight **adjacencyMatrix,
+		int matrixSize);
 };
 
 #endif

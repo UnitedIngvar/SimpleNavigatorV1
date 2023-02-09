@@ -45,9 +45,9 @@ std::vector<vertex_id> GraphAlgorithms::breadthFirstSearch(IGraph &graph,
 distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
                                                          int vertex1,
                                                          int vertex2) {
-  size_t sizeGraphOneIndexing = graph.getMatrixSize() + 1;
+  int graphSize = graph.getMatrixSize() + 1;
 
-  std::vector<distance> distances(sizeGraphOneIndexing, INT_MAX);
+  std::vector<distance> distances(graphSize, INT_MAX);
   distances[vertex1] = 0;
 
   std::unordered_set<vertex_id> visitedVerticesSet;
@@ -58,9 +58,9 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
     minVertexId = INT_MAX;
     minWeight = INT_MAX;
 
-    for (vertex_id vertexId = 1; vertexId < sizeGraphOneIndexing; vertexId++) {
+    for (vertex_id vertexId = 1; vertexId < graphSize; vertexId++) {
       if (visitedVerticesSet.count(vertexId) == 0 &&
-          distances[vertexId] < (int)minWeight) {
+          distances[vertexId] < minWeight) {
         minVertexId = vertexId;
         minWeight = distances[vertexId];
       }
@@ -71,8 +71,8 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
           graph.getVertexById(minVertexId).getAdjacencies();
       for (Adjacency adjacency : adjacencies) {
         vertex_id to = adjacency.getVertex().getId();
-        if ((int)(minWeight + adjacency.getWeight()) < distances[to]) {
-          distances[to] = (int)(minWeight + adjacency.getWeight());
+        if ((minWeight + adjacency.getWeight()) < distances[to]) {
+          distances[to] = (minWeight + adjacency.getWeight());
         }
       }
       visitedVerticesSet.insert(minVertexId);

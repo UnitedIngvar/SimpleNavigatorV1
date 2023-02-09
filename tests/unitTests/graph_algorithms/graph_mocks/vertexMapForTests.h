@@ -4,15 +4,17 @@
 #include <map>
 
 #include "Vertex.h"
-#include "VertexMapBuilder.hpp"
+#include "VertexMapBuilder.h"
 
 class VertexMapForTests {
 private:
-  std::map<vertex_id, Vertex> vertexMap;
+  std::map<vertex_id, Vertex*> vertexMap;
 
 public:
-  VertexMapForTests(vertex_id matrixSize, size_t **adjecencyMatrix);
+  VertexMapForTests(vertex_id matrixSize, weight **adjecencyMatrix);
   Vertex const &getVertexById(vertex_id vertexId);
+
+  ~VertexMapForTests();
 };
 
 #endif

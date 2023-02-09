@@ -66,7 +66,7 @@ TEST(VertexTests, CanBuildBidirectionalAdjacency)
 	auto secondVertex = Vertex(11);
 
 	// Act
-	size_t weight = 10;
+	weight weight = 10;
 	firstVertex.addAdjacency(Adjacency(secondVertex, weight));
 	secondVertex.addAdjacency(Adjacency(firstVertex, weight));
 

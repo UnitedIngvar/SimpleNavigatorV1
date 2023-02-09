@@ -7,7 +7,7 @@ TEST(AdjacencyTests, GettersReturnValidValues)
 	// Arrange
 	vertex_id vertexId = 10;
 	auto expectedVertex = Vertex(vertexId);
-	size_t expectedWeight = 100;
+	weight expectedWeight = 100;
 	auto adjacency = Adjacency(expectedVertex, expectedWeight);
 
 	// Act
@@ -26,8 +26,8 @@ TEST(AdjacencyTests, EqautionOperatorReturnsFalse)
 	vertex_id secondVertexId = 11;
 	auto firstVertex = Vertex(firstVertexId);
 	auto secondVertex = Vertex(secondVertexId);
-	size_t firstWeight = 100;
-	size_t secondWeight = 110;
+	weight firstWeight = 100;
+	weight secondWeight = 110;
 	auto firstAdjacency = Adjacency(firstVertex, firstWeight);
 	auto secondAdjacency = Adjacency(secondVertex, secondWeight);
 
@@ -43,7 +43,7 @@ TEST(AdjacencyTests, EqautionOperatorReturnsTrue)
 	// Arrange
 	vertex_id vertexId = 10;
 	auto vertex = Vertex(vertexId);
-	size_t weight = 100;
+	weight weight = 100;
 	auto firstAdjacency = Adjacency(vertex, weight);
 	auto secondAdjacency = Adjacency(vertex, weight);
 

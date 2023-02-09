@@ -1,7 +1,9 @@
 #ifndef ADJACENCY_H
 # define ADJACENCY_H
 
-#include <cstddef>
+# include "types.h"
+# include <iostream>
+# include <Vertex.h>
 
 class Vertex;
 
@@ -9,15 +11,15 @@ class Adjacency
 {
 private:
 	Vertex const		&_vertex;
-	std::size_t const	_weight;
+	weight const		_weight;
 
 public:
-	Adjacency(Vertex const &vertex, size_t weight);
+	Adjacency(Vertex const &vertex, weight weight);
 
 	Vertex const	&getVertex() const;
-	size_t			getWeight() const;
+	weight			getWeight() const;
 
-	bool	operator==(Adjacency const &other) const;
+	bool			operator==(Adjacency const &other) const;
 };
 
 #endif
