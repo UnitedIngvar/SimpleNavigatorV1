@@ -13,7 +13,7 @@ Vertex const	&Adjacency::getVertex() const
 	return _vertex;
 }
 
-int				Adjacency::getWeight() const
+weight				Adjacency::getWeight() const
 {
 	return _weight;
 }
