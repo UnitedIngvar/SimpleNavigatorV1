@@ -113,7 +113,7 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
 // взвешенном графе с положительным или отрицательным весом ребер (но без
 // отрицательных циклов))
 distance **GraphAlgorithms::getShortestPathsBetweenAllVertices(IGraph &graph) {
-  distance sizeGraph = (int)graph.getMatrixSize();
+  distance sizeGraph = graph.getMatrixSize();
   weight **adjacencyMatrix = graph.getAdjacencyMatrix();
 
   distance **distances = new distance *[sizeGraph];
