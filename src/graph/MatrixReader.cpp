@@ -1,15 +1,13 @@
 #include "MatrixReader.h"
 #include "Constants.h"
 
-// TODO: ВАЖНО! Может ли вес быть отрицательным?
-
 int	MatrixReader::readNextNumberOrThrow(std::string const &line, size_t *offset, std::string const &notFoundErrorMessage)
 {
 	// Проверяем, что в строке только числа
 	if (!std::all_of(line.begin(), line.end(),
-		[](char const& ch){ return ::isdigit(ch) || ::isspace(ch); }))
+		[](char const& ch){ return ::isdigit(ch) || ::isspace(ch) || ch == '-'; }))
 	{
-		throw std::invalid_argument("Adjecency matrix should contain only positive numbers");
+		throw std::invalid_argument("Adjecency matrix should contain only numbers");
 	}
 
 	// Получаем позицию следующего числа
@@ -39,11 +37,6 @@ int	MatrixReader::readNextNumberOrThrow(std::string const &line, size_t *offset,
 		throw std::invalid_argument(numberStr + " is more than maximum value of int number");
 	}
 
-	if (number < 0)
-	{
-		throw std::invalid_argument("Numbers in adjecency matrix must not contain negative numbers");
-	}
-
 	// двигаем смещение по строке на позицию после текущего числа
 	*offset = numberPosition + numberLength + 1;
 	return number;
@@ -66,7 +59,7 @@ int	MatrixReader::readMatrixSize(std::ifstream &file)
 		// Получаем размер матрицы
 		size_t offset = 0;
 		matrixSize = readNextNumberOrThrow(line, &offset,
-			"Adjecency matrix should contain only positive numbers");
+			"Matrix size is not found");
 
 		if (matrixSize <= 0)
 		{
