@@ -15,9 +15,11 @@ struct breadthFirstSearchTests : public testing::Test {
   NiceMock<GraphMock> graphMock;
   GraphAlgorithms graphAlgorithms;
 
-  void SetUp() override {}
+  void SetUp() {}
 
-  void TearDown() override { delete[] weightMatrix; }
+  void TearDown() {
+    delete[] weightMatrix;
+  }
 };
 
 TEST_F(breadthFirstSearchTests, Graph5startFrom1) {

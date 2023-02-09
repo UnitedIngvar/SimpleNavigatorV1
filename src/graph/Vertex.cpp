@@ -1,7 +1,8 @@
 #include "Vertex.h"
+#include <iostream>
 
 Vertex::Vertex(Vertex const &other)
-		: _id(other._id), _adjacentVertexes(other._adjacentVertexes)
+		: _id(other._id), _adjacentVertices(other._adjacentVertices)
 {
 }
 
@@ -10,25 +11,47 @@ Vertex::Vertex(vertex_id vertexId)
 {
 }
 
-vertex_id						Vertex::getId() const
+vertex_id								Vertex::getId() const
 {
 	return _id;
 }
 
 std::vector<Adjacency> const	Vertex::getAdjacencies() const
 {
-	return _adjacentVertexes;
+	return _adjacentVertices;
 }
 
-void							Vertex::addAdjacency(Adjacency const &adjacency)
+void									Vertex::addAdjacency(Adjacency const &adjacency)
 {
-	_adjacentVertexes.push_back(adjacency);
+	_adjacentVertices.push_back(adjacency);
 }
 
 bool							Vertex::operator==(Vertex const &other) const
 {
-	// We're only interested in vertex id here,
-	// as we fill the adjacency list only once
-	// in the beginning of the program
-	return other.getId() == this->getId();
+	if (other.getId() != this->getId())
+	{
+		return false;
+	}
+
+	std::vector<Adjacency> otherAdjacencies = other.getAdjacencies();
+	std::vector<Adjacency> thisAdjacencies = this->getAdjacencies();
+	if (otherAdjacencies.size() != thisAdjacencies.size())
+	{
+		return false;
+	}
+
+	for (size_t i = 0; i < otherAdjacencies.size(); i++)
+	{
+		if (otherAdjacencies[i] == thisAdjacencies[i])
+			continue;
+
+		return false;
+	}
+
+	return true;
+}
+
+Vertex::~Vertex()
+{
+
 }
