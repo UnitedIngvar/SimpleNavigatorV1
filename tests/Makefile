@@ -29,9 +29,11 @@ GMOCK_INCLUDES			= -I$(GMOCK_HEADERS_DIR)
 GMOCK_LIB				= -pthread $(GTEST_DIR)/lib/libgmock_main.a $(GTEST_DIR)/lib/libgmock.a
 
 CPPFLAGS += -isystem -std=c++17
-CXXFLAGS += -g -Wall -Wextra -pthread -std=c++17
+CXXFLAGS += -g -Wall -Wextra -pthread -std=c++17 #-fsanitize=address,undefined -fno-sanitize-recover -fstack-protector -O0
 
 all: build_gtest run
+
+leaks: build_gtest run_leaks
 
 build_gtest:
 	@cd $(GTEST_DIR_REPOSITORY); \
@@ -62,6 +64,10 @@ $(TESTS): $(PROJECT_OBJS) $(TESTS_OBJS)
 
 run : $(TESTS)
 	./$(TESTS) $(IGNORE_ERROR)
+	$(MAKE) fclean
+
+run_leaks : $(TESTS)
+	leaks --atExit -- ./$(TESTS) $(IGNORE_ERROR)
 	$(MAKE) fclean
 
 # TODO: поизучать, как правильно

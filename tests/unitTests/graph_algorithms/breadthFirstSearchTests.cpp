@@ -15,10 +15,9 @@ struct breadthFirstSearchTests : public testing::Test {
   NiceMock<GraphMock> graphMock;
   GraphAlgorithms graphAlgorithms;
 
-  void SetUp() override {}
+  void SetUp() {}
 
-  void TearDown() override {
-    delete[] weightMatrix; }
+  void TearDown() { delete[] weightMatrix; }
 };
 
 TEST_F(breadthFirstSearchTests, Graph5startFrom1) {
@@ -55,7 +54,7 @@ TEST_F(breadthFirstSearchTests, Graph5startFrom2) {
                          {5, 2, 0, 0, 2},
                          {0, 0, 0, 2, 0}};
   weightMatrix = new weight *[5];
-  for (int i = 0; i < 5; i++) {
+  for (weight i = 0; i < 5; i++) {
     weightMatrix[i] = new weight[5];
     weightMatrix[i] = matrix[i];
   }
@@ -81,7 +80,7 @@ TEST_F(breadthFirstSearchTests, Graph5startFrom3) {
                          {5, 2, 0, 0, 2},
                          {0, 0, 0, 2, 0}};
   weightMatrix = new weight *[5];
-  for (int i = 0; i < 5; i++) {
+  for (weight i = 0; i < 5; i++) {
     weightMatrix[i] = new weight[5];
     weightMatrix[i] = matrix[i];
   }
