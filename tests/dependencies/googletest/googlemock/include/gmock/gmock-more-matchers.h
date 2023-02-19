@@ -65,11 +65,11 @@ namespace internal {
 // can be used as a Matcher<T> as long as T is either a container that defines
 // empty() and size() (e.g. std::vector or std::string), or a C-style string.
 class IsEmptyMatcher {
- public:
+public:
   // Matches anything that defines empty() and size().
   template <typename MatcheeContainerType>
-  bool MatchAndExplain(const MatcheeContainerType& c,
-                       MatchResultListener* listener) const {
+  bool MatchAndExplain(const MatcheeContainerType &c,
+                       MatchResultListener *listener) const {
     if (c.empty()) {
       return true;
     }
@@ -78,17 +78,17 @@ class IsEmptyMatcher {
   }
 
   // Matches C-style strings.
-  bool MatchAndExplain(const char* s, MatchResultListener* listener) const {
+  bool MatchAndExplain(const char *s, MatchResultListener *listener) const {
     return MatchAndExplain(std::string(s), listener);
   }
 
   // Describes what this matcher matches.
-  void DescribeTo(std::ostream* os) const { *os << "is empty"; }
+  void DescribeTo(std::ostream *os) const { *os << "is empty"; }
 
-  void DescribeNegationTo(std::ostream* os) const { *os << "isn't empty"; }
+  void DescribeNegationTo(std::ostream *os) const { *os << "isn't empty"; }
 };
 
-}  // namespace internal
+} // namespace internal
 
 // Creates a polymorphic matcher that matches an empty container or C-style
 // string. The container must support both size() and empty(), which all
@@ -117,6 +117,6 @@ MATCHER(IsFalse, negation ? "is true" : "is false") {
 #pragma warning(pop)
 #endif
 
-}  // namespace testing
+} // namespace testing
 
-#endif  // GOOGLEMOCK_INCLUDE_GMOCK_GMOCK_MORE_MATCHERS_H_
+#endif // GOOGLEMOCK_INCLUDE_GMOCK_GMOCK_MORE_MATCHERS_H_

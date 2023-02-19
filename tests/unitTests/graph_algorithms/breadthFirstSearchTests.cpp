@@ -17,8 +17,7 @@ struct breadthFirstSearchTests : public testing::Test {
 
   void SetUp() override {}
 
-  void TearDown() override {
-    delete[] weightMatrix; }
+  void TearDown() override { delete[] weightMatrix; }
 };
 
 TEST_F(breadthFirstSearchTests, Graph5startFrom1) {

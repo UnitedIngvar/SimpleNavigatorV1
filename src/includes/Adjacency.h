@@ -1,25 +1,26 @@
 #ifndef ADJACENCY_H
-# define ADJACENCY_H
+#define ADJACENCY_H
 
-# include "types.h"
-# include <iostream>
-# include <Vertex.h>
+#include <Vertex.h>
+
+#include <iostream>
+
+#include "types.h"
 
 class Vertex;
 
-class Adjacency
-{
-private:
-	Vertex const		&_vertex;
-	weight const		_weight;
+class Adjacency {
+ private:
+  Vertex const &_vertex;
+  weight const _weight;
 
-public:
-	Adjacency(Vertex const &vertex, weight weight);
+ public:
+  Adjacency(Vertex const &vertex, weight weight);
 
-	Vertex const	&getVertex() const;
-	weight			getWeight() const;
+  Vertex const &getVertex() const;
+  weight getWeight() const;
 
-	bool			operator==(Adjacency const &other) const;
+  bool operator==(Adjacency const &other) const;
 };
 
 #endif

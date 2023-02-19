@@ -10,6 +10,7 @@ PROJECT_SRCS			:= $(filter-out $(PROJECT_DIR)/main.cpp, \
 PROJECT_OBJS			= $(patsubst %.cpp, %.o, $(PROJECT_SRCS))
 
 TESTS_DIR				= unitTests
+TESTS_INCLUDES			=
 TESTS_SRCS				= $(shell find $(TESTS_DIR) -name "*.cpp")
 TESTS_OBJS				= $(patsubst %.cpp, %.o, $(TESTS_SRCS))
 TESTS_DFILES			= $(patsubst %.cpp, %.d, $(TESTS_SRCS))
@@ -28,7 +29,7 @@ GMOCK_HEADERS_DIR		= $(GTEST_DIR_REPOSITORY)/googlemock/include/gmock
 GMOCK_INCLUDES			= -I$(GMOCK_HEADERS_DIR)
 GMOCK_LIB				= -pthread $(GTEST_DIR)/lib/libgmock_main.a $(GTEST_DIR)/lib/libgmock.a
 
-CPPFLAGS += -isystem -std=c++17
+CPPFLAGS += -isystem
 CXXFLAGS += -g -Wall -Wextra -pthread -std=c++17
 
 all: build_gtest run
