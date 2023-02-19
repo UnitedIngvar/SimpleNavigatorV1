@@ -9,7 +9,7 @@ using ::testing::Return;
 using ::testing::ReturnRef;
 
 struct getShortestPathBetweenVerticesDijkstraTests : public testing::Test {
-  weight **weightMatrix;
+  weight **weightMatrix{};
   NiceMock<GraphMock> graphMock;
   GraphAlgorithms graphAlgorithms;
 

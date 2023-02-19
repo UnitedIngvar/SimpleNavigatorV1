@@ -3,8 +3,6 @@
 
 #include "s21_graph.h"
 
-typedef int distance;
-
 class GraphAlgorithms {
  public:
   GraphAlgorithms() {}
@@ -15,6 +13,8 @@ class GraphAlgorithms {
 
   distance getShortestPathBetweenVertices(IGraph &graph, int vertex1,
                                           int vertex2);
+
+  distance **getShortestPathsBetweenAllVertices(IGraph &graph);
 
   ~GraphAlgorithms() {}
 };
