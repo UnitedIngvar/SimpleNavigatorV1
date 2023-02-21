@@ -8,7 +8,7 @@
 
 class VertexMapForTests {
 private:
-  std::map<vertex_id, Vertex*> vertexMap;
+  std::map<vertex_id, Vertex *> vertexMap;
 
 public:
   VertexMapForTests(vertex_id matrixSize, weight **adjecencyMatrix);

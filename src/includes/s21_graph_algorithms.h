@@ -11,7 +11,8 @@ class GraphAlgorithms {
 
   std::vector<vertex_id> breadthFirstSearch(IGraph &graph, int startVertex);
 
-  distance getShortestPathBetweenVertices(IGraph &graph, int vertex1, int vertex2);
+  distance getShortestPathBetweenVertices(IGraph &graph, int vertex1,
+                                          int vertex2);
 
   distance **getShortestPathsBetweenAllVertices(IGraph &graph);
 

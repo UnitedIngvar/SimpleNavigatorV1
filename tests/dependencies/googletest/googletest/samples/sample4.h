@@ -33,10 +33,10 @@
 
 // A simple monotonic counter.
 class Counter {
- private:
+private:
   int counter_;
 
- public:
+public:
   // Creates a counter that starts at 0.
   Counter() : counter_(0) {}
 
@@ -50,4 +50,4 @@ class Counter {
   void Print() const;
 };
 
-#endif  // GOOGLETEST_SAMPLES_SAMPLE4_H_
+#endif // GOOGLETEST_SAMPLES_SAMPLE4_H_
