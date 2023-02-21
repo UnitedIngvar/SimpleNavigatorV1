@@ -1,15 +1,13 @@
 #ifndef VERTEX_MAP_BUILDER_H
-# define VERTEX_MAP_BUILDER_H
+#define VERTEX_MAP_BUILDER_H
 
-#include <map>
-#include "Vertex.h"
+#include "IVertexMapBuilder.h"
 
-class VertexMapBuilder
-{
-public:
-	std::map<vertex_id, Vertex*>	buildVertexesMap(
-		weight **adjacencyMatrix,
-		int matrixSize);
+class VertexMapBuilder : public IVertexMapBuilder {
+ public:
+  std::map<vertex_id, Vertex *> buildVerticesMap(weight **adjacencyMatrix,
+                                                 int matrixSize) const;
+  ~VertexMapBuilder();
 };
 
 #endif

@@ -46,4 +46,4 @@ class ExternalInstantiationTest : public ::testing::TestWithParam<int> {};
 class InstantiationInMultipleTranslationUnitsTest
     : public ::testing::TestWithParam<int> {};
 
-#endif  // GOOGLETEST_TEST_GOOGLETEST_PARAM_TEST_TEST_H_
+#endif // GOOGLETEST_TEST_GOOGLETEST_PARAM_TEST_TEST_H_

@@ -1,86 +1,65 @@
-#include <exception>
 #include <algorithm>
+#include <exception>
 #include <vector>
-#include <sstream>
-#include "s21_graph.h"
 #include "Constants.h"
-#include "MatrixReader.h"
-#include "VertexMapBuilder.h"
+#include "s21_graph.h"
 
-void	Graph::loadGraphFromFile(std::string const &filename)
-{
-	std::ifstream file(filename);
-	if (!file.good())
-	{
-		file.clear();
-		throw std::invalid_argument("file could not be opened");
-	}
+Graph::Graph(IMatrixReader const &matrixReader,
+             IVertexMapBuilder const &vertexMapBuilder)
+    : _matrixReader(matrixReader), _vertexMapBuilder(vertexMapBuilder) {}
 
-	MatrixReader matrixReader;
-	_matrixSize = matrixReader.readMatrixSize(file);
-	if (_matrixSize == 0)
-	{
-		throw std::invalid_argument("matrix size can't be zero");
-	}
+void Graph::loadGraphFromFile(std::string const &filename) {
+  std::ifstream file(filename);
+  if (!file.good()) {
+    file.clear();
+    throw std::invalid_argument("file could not be opened");
+  }
 
-	_adjecencyMatrix = matrixReader.readAdjacencyMatrix(file, _matrixSize);
+  _matrixSize = _matrixReader.readMatrixSize(file);
+  _adjecencyMatrix = _matrixReader.readAdjacencyMatrix(file, _matrixSize);
+  _vertexMap =
+      _vertexMapBuilder.buildVerticesMap(_adjecencyMatrix, _matrixSize);
 
-	VertexMapBuilder vertexMapBuilder;
-	_vertexMap = vertexMapBuilder.buildVertexesMap(_adjecencyMatrix, _matrixSize);
+  _matrixInitialized = true;
 }
 
-void	Graph::exportGraphToDot(std::string const &filename)
-{
-	std::ifstream file(filename);
-	if (!file.good())
-	{
-		file.clear();
-		throw std::invalid_argument("file could not be opened");
-	}
+void Graph::exportGraphToDot(std::string const &filename) { (void)filename; }
 
-  std::stringstream stringBuilder;
-  for (auto &&pair : _vertexMap)
-  {
+Vertex const &Graph::getVertexById(vertex_id vertexId) const {
+  if (!_matrixInitialized) {
+    throw std::invalid_argument("matrix is not initialized");
+  }
+  if (_vertexMap.find(vertexId) == _vertexMap.end()) {
+    throw std::out_of_range("vertex index " + std::to_string(vertexId) +
+                            " is not present in the adjecency matrix");
+  }
 
+  return *(_vertexMap.at(vertexId));
+}
+
+int Graph::getMatrixSize() const {
+  if (_matrixInitialized) {
+    return _matrixSize;
+  } else {
+    throw std::invalid_argument("matrix is not initialized");
   }
 }
 
-Vertex	const &Graph::getVertexById(vertex_id vertexId) const
-{
-	if (!_matrixInitialized)
-	{
-		throw std::invalid_argument("matrix is not initialized");
-	}
-	if (_vertexMap.find(vertexId) == _vertexMap.end())
-	{
-		throw std::out_of_range("vertex index " + std::to_string(vertexId) +
-								" is not present in the adjecency matrix");
-	}
-
-	return *(_vertexMap.at(vertexId));
+weight **Graph::getAdjacencyMatrix() const {
+  if (_matrixInitialized) {
+    return _adjecencyMatrix;
+  } else {
+    throw std::invalid_argument("matrix is not initialized");
+  }
 }
 
-int			Graph::getMatrixSize() const
-{
-	return _matrixSize;
-}
+Graph::~Graph() {
+  if (_matrixInitialized) {
+    for (int i = 0; i < _matrixSize; i++) {
+      delete[] _adjecencyMatrix[i];
+      delete _vertexMap.at(i + 1);
+    }
 
-weight			**Graph::getAdjacencyMatrix() const
-{
-	return _adjecencyMatrix;
-}
-
-
-Graph::~Graph()
-{
-	if (_matrixInitialized)
-	{
-		for (int i = 0; i < _matrixSize; i++)
-		{
-			delete[] _adjecencyMatrix[i];
-			delete _vertexMap.at(i + 1);
-		}
-
-		delete[] _adjecencyMatrix;
-	}
+    delete[] _adjecencyMatrix;
+  }
 }
