@@ -1,6 +1,7 @@
 #include <exception>
 #include <algorithm>
 #include <vector>
+#include <sstream>
 #include "s21_graph.h"
 #include "Constants.h"
 #include "MatrixReader.h"
@@ -30,7 +31,18 @@ void	Graph::loadGraphFromFile(std::string const &filename)
 
 void	Graph::exportGraphToDot(std::string const &filename)
 {
-	(void) filename;
+	std::ifstream file(filename);
+	if (!file.good())
+	{
+		file.clear();
+		throw std::invalid_argument("file could not be opened");
+	}
+
+  std::stringstream stringBuilder;
+  for (auto &&pair : _vertexMap)
+  {
+
+  }
 }
 
 Vertex	const &Graph::getVertexById(vertex_id vertexId) const
