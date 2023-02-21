@@ -78,4 +78,4 @@ run_leaks : $(TESTS)
 
 include $(wildcard $(TESTS_DFILES))
 
-.PHONY: all clean fclean re coverage build_gtest run
+.PHONY: all leaks clean fclean re coverage build_gtest run
