@@ -25,16 +25,17 @@ static void deleteMatrix(int size, distance **&matrix) {
   delete[] matrix;
 }
 
-TEST(getShortestPathsBetweenAllVerticesFloydTests, Graph4_1) {
+TEST(getShortestPathsBetweenAllVerticesFloydTests, Graph4) {
   // Arrange
   NiceMock<GraphMock> graphMock;
   GraphAlgorithms graphAlgorithms;
   const int size = 4;
   weight matrix[size][size] = {
-      {0, -2, 7, 5}, {0, 0, 8, 6}, {0, 3, 0, -4}, {-1, 0, 0, 0}};
+      {0, 0, -2, 0}, {4, 0, 3, 0}, {0, 0, 0, 2}, {0, -1, 0, 0}};
   weight *weightMatrix[size] = {matrix[0], matrix[1], matrix[2], matrix[3]};
+
   distance matrix2[size][size] = {
-      {0, -2, 6, 2}, {3, 0, 8, 4}, {-5, -7, 0, -4}, {-1, -3, 5, 0}};
+      {0, -1, -2, 0}, {4, 0, 2, 4}, {5, 1, 0, 2}, {3, -1, 1, 0}};
   distance *ansMatrix[size] = {matrix2[0], matrix2[1], matrix2[2], matrix2[3]};
 
   VertexMapForTests vertexMapForTests(size, weightMatrix);
@@ -50,17 +51,16 @@ TEST(getShortestPathsBetweenAllVerticesFloydTests, Graph4_1) {
   deleteMatrix(size, shortestPathBetweenAllVertices);
 }
 
-TEST(getShortestPathsBetweenAllVerticesFloydTests, Graph4) {
+TEST(getShortestPathsBetweenAllVerticesFloydTests, Graph4_1) {
   // Arrange
   NiceMock<GraphMock> graphMock;
   GraphAlgorithms graphAlgorithms;
   const int size = 4;
   weight matrix[size][size] = {
-      {0, 0, -2, 0}, {4, 0, 3, 0}, {0, 0, 0, 2}, {0, -1, 0, 0}};
+      {0, -2, 7, 5}, {0, 0, 8, 6}, {0, 3, 0, -4}, {-1, 0, 0, 0}};
   weight *weightMatrix[size] = {matrix[0], matrix[1], matrix[2], matrix[3]};
-
   distance matrix2[size][size] = {
-      {0, -1, -2, 0}, {4, 0, 2, 4}, {5, 1, 0, 2}, {3, -1, 1, 0}};
+      {0, -2, 6, 2}, {3, 0, 8, 4}, {-5, -7, 0, -4}, {-1, -3, 5, 0}};
   distance *ansMatrix[size] = {matrix2[0], matrix2[1], matrix2[2], matrix2[3]};
 
   VertexMapForTests vertexMapForTests(size, weightMatrix);
@@ -209,4 +209,48 @@ TEST(getShortestPathsBetweenAllVerticesFloydTests, Graph10) {
   // Assert
   ASSERT_TRUE(matrixComparer(size, shortestPathBetweenAllVertices, ansMatrix));
   deleteMatrix(size, shortestPathBetweenAllVertices);
+}
+
+TEST(getShortestPathsBetweenAllVerticesFloydTests, Graph4WithNegativeCycle) {
+  // Arrange
+  NiceMock<GraphMock> graphMock;
+  GraphAlgorithms graphAlgorithms;
+  const int size = 4;
+  weight matrix[size][size] = {
+      {0, 0, -2, 0}, {4, 0, 3, 0}, {-2, 0, 0, 2}, {0, -1, 0, 0}};
+  weight *weightMatrix[size] = {matrix[0], matrix[1], matrix[2], matrix[3]};
+
+  VertexMapForTests vertexMapForTests(size, weightMatrix);
+  EXPECT_CALL(graphMock, getMatrixSize()).WillOnce(Return(size));
+  EXPECT_CALL(graphMock, getAdjacencyMatrix()).WillOnce(Return(weightMatrix));
+
+  // Act
+
+  // Assert
+  ASSERT_THROW(graphAlgorithms.getShortestPathsBetweenAllVertices(graphMock),
+               std::invalid_argument);
+}
+
+TEST(getShortestPathsBetweenAllVerticesFloydTests, Graph5WithNegativeCycle) {
+  // Arrange
+  NiceMock<GraphMock> graphMock;
+  GraphAlgorithms graphAlgorithms;
+  const int size = 5;
+  weight matrix[size][size] = {{0, -3, -2, 0, 0},
+                               {-3, 0, 1, 7, 0},
+                               {-2, 1, 0, 0, 0},
+                               {0, 0, 7, 0, 2},
+                               {0, 0, 0, 2, 0}};
+  weight *weightMatrix[size] = {matrix[0], matrix[1], matrix[2], matrix[3],
+                                matrix[4]};
+
+  VertexMapForTests vertexMapForTests(size, weightMatrix);
+  EXPECT_CALL(graphMock, getMatrixSize()).WillOnce(Return(size));
+  EXPECT_CALL(graphMock, getAdjacencyMatrix()).WillOnce(Return(weightMatrix));
+
+  // Act
+
+  // Assert
+  ASSERT_THROW(graphAlgorithms.getShortestPathsBetweenAllVertices(graphMock),
+               std::invalid_argument);
 }
