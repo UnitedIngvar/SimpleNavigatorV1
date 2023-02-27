@@ -7,7 +7,7 @@
 using ::testing::NiceMock;
 using ::testing::Return;
 
-bool matrixComparer(int size, distance **matrix1, distance **matrix2) {
+static bool matrixComparer(int size, distance **matrix1, distance **matrix2) {
   for (int i = 0; i < size; i++) {
     for (int j = 0; j < size; j++) {
       if (matrix1[i][j] != matrix2[i][j]) {
@@ -18,7 +18,7 @@ bool matrixComparer(int size, distance **matrix1, distance **matrix2) {
   return true;
 }
 
-void deleteMatrix(int size, distance **&matrix) {
+static void deleteMatrix(int size, distance **&matrix) {
   for (int i = 0; i < size; i++) {
     delete[] matrix[i];
   }

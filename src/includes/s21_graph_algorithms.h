@@ -16,6 +16,8 @@ class GraphAlgorithms {
 
   distance **getShortestPathsBetweenAllVertices(IGraph &graph);
 
+  weight **getLeastSpanningTree(IGraph &graph);
+
   ~GraphAlgorithms() {}
 };
 

@@ -72,9 +72,9 @@ std::vector<vertex_id> GraphAlgorithms::breadthFirstSearch(IGraph &graph,
 distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
                                                          int vertex1,
                                                          int vertex2) {
-  int graphSize = graph.getMatrixSize() + 1;
+  int sizeGraph = graph.getMatrixSize() + 1;
 
-  std::vector<distance> distances(graphSize, INT_MAX);
+  std::vector<distance> distances(sizeGraph, INT_MAX);
   distances[vertex1] = 0;
 
   std::unordered_set<vertex_id> visitedVerticesSet;
@@ -85,7 +85,7 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
     minVertexId = INT_MAX;
     minWeight = INT_MAX;
 
-    for (vertex_id vertexId = 1; vertexId < graphSize; vertexId++) {
+    for (vertex_id vertexId = 1; vertexId < sizeGraph; vertexId++) {
       if (visitedVerticesSet.count(vertexId) == 0 &&
           distances[vertexId] < minWeight) {
         minVertexId = vertexId;
@@ -148,4 +148,69 @@ distance **GraphAlgorithms::getShortestPathsBetweenAllVertices(IGraph &graph) {
   }
 
   return distances;
+}
+
+// Алгоритм Прима
+// построение минимального остовного дерева взвешенного связного
+// неориентированного графа
+weight **GraphAlgorithms::getLeastSpanningTree(IGraph &graph) {
+  distance sizeGraph = graph.getMatrixSize();
+
+  weight **adjacencyMatrixLeastSpanningTree = new weight *[sizeGraph];
+  for (vertex_id i = 0; i < sizeGraph; i++) {
+    adjacencyMatrixLeastSpanningTree[i] = new weight[sizeGraph];
+    // заполняем матрицу нулями
+    memset(adjacencyMatrixLeastSpanningTree[i], 0, sizeGraph * sizeof(weight));
+  }
+
+  // приоритетная очередь, содержащая пары:
+  // {вес, {id вершины куда, id вершины откуда}}
+  std::priority_queue<
+      std::pair<weight, std::pair<vertex_id, vertex_id>>,
+      std::vector<std::pair<weight, std::pair<vertex_id, vertex_id>>>,
+      std::greater<std::pair<weight, std::pair<vertex_id, vertex_id>>>>
+      unvisitedVerticesQueue;
+  unvisitedVerticesQueue.push(
+      {0, {1, -1}});  // начинаем с вершины 1, предка нет
+  std::unordered_set<vertex_id> includedVerticesInSpanningTree;
+
+  while (!unvisitedVerticesQueue.empty()) {
+    std::pair<weight, std::pair<vertex_id, vertex_id>> from =
+        unvisitedVerticesQueue.top();
+    unvisitedVerticesQueue.pop();
+
+    weight weightFrom = from.first;
+    vertex_id vertexId = from.second.first;
+    vertex_id vertexIdFrom = from.second.second;
+
+    // проверяем добавлена ли вершина в остовное дерево
+    if (includedVerticesInSpanningTree.count(vertexId) == 1) {
+      continue;
+    }
+
+    // добавляем вершину в остовное дерево
+    includedVerticesInSpanningTree.insert(vertexId);
+    if (vertexIdFrom != -1) {
+		// заполняем матрицу смежности для минимального остовного дерева
+      adjacencyMatrixLeastSpanningTree[vertexId - 1][vertexIdFrom - 1] =
+          weightFrom;
+      adjacencyMatrixLeastSpanningTree[vertexIdFrom - 1][vertexId - 1] =
+          weightFrom;
+    }
+
+    std::vector<Adjacency> adjacencies =
+        graph.getVertexById(vertexId).getAdjacencies();
+
+    for (Adjacency adjacency : adjacencies) {
+      weight weightTo = adjacency.getWeight();
+      vertex_id vertexIdTo = adjacency.getVertex().getId();
+
+      if (includedVerticesInSpanningTree.count(vertexIdTo) == 0) {
+        // добавляем ребро в очередь
+        unvisitedVerticesQueue.push({weightTo, {vertexIdTo, vertexId}});
+      }
+    }
+  }
+
+  return adjacencyMatrixLeastSpanningTree;
 }
