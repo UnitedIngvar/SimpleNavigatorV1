@@ -163,7 +163,7 @@ weight **GraphAlgorithms::getLeastSpanningTree(IGraph &graph) {
     memset(adjacencyMatrixLeastSpanningTree[i], 0, sizeGraph * sizeof(weight));
   }
 
-  // приоритетная очередь, содержащая пары:
+  // приоритетная очередь, содержащая ребро в виде пары:
   // {вес, {id вершины куда, id вершины откуда}}
   std::priority_queue<
       std::pair<weight, std::pair<vertex_id, vertex_id>>,
