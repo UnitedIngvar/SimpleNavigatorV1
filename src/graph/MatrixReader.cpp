@@ -1,6 +1,8 @@
 #include "MatrixReader.h"
-#include "Constants.h"
+
 #include <iostream>
+
+#include "Constants.h"
 
 int MatrixReader::readNextNumberOrThrow(
     std::string const &line, size_t *offset,
@@ -37,12 +39,7 @@ int MatrixReader::readNextNumberOrThrow(
   }
 
   // двигаем смещение по строке на позицию после текущего числа
-  // std::cout << "line: " << line << std::endl;
-  // std::cout << "offset: " << *offset << std::endl;
-  // std::cout << "num: " << numberStr << std::endl;
-  // std::cout << "num pos: " << numberPosition << std::endl;
-  // std::cout << "num pos after: " << positionAfterNumber << std::endl;
-  // std::cout << "num len: " << numberLength << std::endl;
+
   *offset = numberPosition + numberLength + 1;
   return number;
 }
@@ -113,7 +110,8 @@ weight **MatrixReader::readAdjacencyMatrix(std::ifstream &file,
     }
 
     if (!hasAdjacency) {
-      throw std::invalid_argument("A vertex should have at least one adjacency");
+      throw std::invalid_argument(
+          "A vertex should have at least one adjacency");
     }
   }
 

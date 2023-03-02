@@ -1,9 +1,10 @@
 #include <algorithm>
 #include <exception>
+#include <iostream>
 #include <vector>
+
 #include "Constants.h"
 #include "s21_graph.h"
-#include <iostream>
 
 Graph::Graph(IMatrixReader const &matrixReader,
              IVertexMapBuilder const &vertexMapBuilder,
@@ -12,14 +13,13 @@ Graph::Graph(IMatrixReader const &matrixReader,
       _vertexMapBuilder(vertexMapBuilder),
       _dotBuilder(dotBuilder) {}
 
-GraphProperties Graph::determineGraphProperties(weight **adjacencyMatrix, int matrixSize) const {
+GraphProperties Graph::determineGraphProperties(weight **adjacencyMatrix,
+                                                int matrixSize) const {
   bool isDirected = false;
   bool isWeighted = false;
 
-  for (int i = 0; i < matrixSize; i++)
-  {
-    for (int j = 0; j < matrixSize; j++)
-    {
+  for (int i = 0; i < matrixSize; i++) {
+    for (int j = 0; j < matrixSize; j++) {
       if (adjacencyMatrix[i][j] != 1 && adjacencyMatrix[i][j] != 0) {
         isWeighted = true;
       }
@@ -28,18 +28,13 @@ GraphProperties Graph::determineGraphProperties(weight **adjacencyMatrix, int ma
       }
 
       if ((isWeighted && isDirected)) {
-        return GraphProperties {
-          .isDirected = isDirected,
-          .isWeighted = isWeighted
-        };
+        return GraphProperties{.isDirected = isDirected,
+                               .isWeighted = isWeighted};
       }
     }
   }
 
-  return GraphProperties {
-    .isDirected = isDirected,
-    .isWeighted = isWeighted
-  };
+  return GraphProperties{.isDirected = isDirected, .isWeighted = isWeighted};
 }
 
 void Graph::loadGraphFromFile(std::string const &filename) {
@@ -49,19 +44,16 @@ void Graph::loadGraphFromFile(std::string const &filename) {
     throw std::invalid_argument("file could not be opened");
   }
 
-  try
-  {
+  try {
     _matrixSize = _matrixReader.readMatrixSize(file);
     _adjecencyMatrix = _matrixReader.readAdjacencyMatrix(file, _matrixSize);
-  }
-  catch (std::invalid_argument ex)
-  {
+  } catch (std::invalid_argument ex) {
     file.close();
     throw ex;
   }
 
   _vertexMap =
-    _vertexMapBuilder.buildVerticesMap(_adjecencyMatrix, _matrixSize);
+      _vertexMapBuilder.buildVerticesMap(_adjecencyMatrix, _matrixSize);
   _graphProperties = determineGraphProperties(_adjecencyMatrix, _matrixSize);
   _matrixInitialized = true;
 
@@ -78,7 +70,7 @@ void Graph::exportGraphToDot(std::string const &filename) {
   file << _dotBuilder.buildDotFromGraph(*this);
 
   file.close();
-  }
+}
 
 Vertex const &Graph::getVertexById(vertex_id vertexId) const {
   if (!_matrixInitialized) {

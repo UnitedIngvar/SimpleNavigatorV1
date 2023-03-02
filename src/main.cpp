@@ -1,12 +1,9 @@
-#include "s21_graph.h"
+#include <exception>
+#include <iostream>
+
+#include "DotBuilder.h"
 #include "MatrixReader.h"
 #include "VertexMapBuilder.h"
-#include "DotBuilder.h"
-#include <iostream>
-#include <exception>
+#include "s21_graph.h"
 
-int main(void)
-{
-}
-
-
+int main(void) {}

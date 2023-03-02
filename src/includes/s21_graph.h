@@ -5,12 +5,12 @@
 #include <map>
 #include <string>
 
+#include "DotBuilder.h"
+#include "GraphProperties.h"
 #include "IGraph.h"
 #include "IMatrixReader.h"
 #include "IVertexMapBuilder.h"
 #include "Vertex.h"
-#include "DotBuilder.h"
-#include "GraphProperties.h"
 
 class Graph : public IGraph {
  private:
@@ -26,7 +26,8 @@ class Graph : public IGraph {
   IVertexMapBuilder const &_vertexMapBuilder;
   IDotBuilder const &_dotBuilder;
 
-  GraphProperties determineGraphProperties(weight **adjacencyMatrix, int matrixSize) const;
+  GraphProperties determineGraphProperties(weight **adjacencyMatrix,
+                                           int matrixSize) const;
 
  public:
   Graph(IMatrixReader const &matrixReader,

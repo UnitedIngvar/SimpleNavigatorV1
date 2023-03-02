@@ -2,9 +2,9 @@
 
 #include "gmock.h"
 #include "gtest.h"
+#include "mocks/DotBuilderMock.h"
 #include "mocks/MatrixReaderMock.h"
 #include "mocks/VertexMapBuilderMock.h"
-#include "mocks/DotBuilderMock.h"
 #include "s21_graph.h"
 #include <filesystem>
 
@@ -18,10 +18,7 @@ TEST(GraphTests, GetVertexById_MatrixNotInitialized_ThrowsException) {
   VertexMapBuilderMock vertexMapBuilderMock;
   DotBuilderMock dotBuilderMock;
 
-  auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   // Act
 
@@ -35,10 +32,7 @@ TEST(GraphTests, GetMatrixSize_MatrixNotInitialized_ThrowsException) {
   VertexMapBuilderMock vertexMapBuilderMock;
   DotBuilderMock dotBuilderMock;
 
-  auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   // Act
 
@@ -52,10 +46,7 @@ TEST(GraphTests, IsDirected_MatrixNotInitialized_ThrowsException) {
   VertexMapBuilderMock vertexMapBuilderMock;
   DotBuilderMock dotBuilderMock;
 
-  auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   // Act
 
@@ -69,10 +60,7 @@ TEST(GraphTests, IsWeighted_MatrixNotInitialized_ThrowsException) {
   VertexMapBuilderMock vertexMapBuilderMock;
   DotBuilderMock dotBuilderMock;
 
-  auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   // Act
 
@@ -86,10 +74,7 @@ TEST(GraphTests, GetAdjacencyMatrix_MatrixNotInitialized_ThrowsException) {
   VertexMapBuilderMock vertexMapBuilderMock;
   DotBuilderMock dotBuilderMock;
 
-    auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   // Act
 
@@ -97,7 +82,8 @@ TEST(GraphTests, GetAdjacencyMatrix_MatrixNotInitialized_ThrowsException) {
   ASSERT_THROW(graph.getAdjacencyMatrix(), std::invalid_argument);
 }
 
-TEST(GraphTests, LoadGraphFromFile_WeightedUndirectedGraph_GraphHasValidValues) {
+TEST(GraphTests,
+     LoadGraphFromFile_WeightedUndirectedGraph_GraphHasValidValues) {
   // Arrange
   MatrixReaderMock matrixReaderMock;
   VertexMapBuilderMock vertexMapBuilderMock;
@@ -109,10 +95,7 @@ TEST(GraphTests, LoadGraphFromFile_WeightedUndirectedGraph_GraphHasValidValues) 
 
   const int size = 4;
   weight matrix[size][size] = {
-      {0, 29, 20, 21},
-      {29, 0, 15, 29},
-      {20, 15, 0, 15},
-      {21, 29, 15, 0}};
+      {0, 29, 20, 21}, {29, 0, 15, 29}, {20, 15, 0, 15}, {21, 29, 15, 0}};
   weight **expectedMatrix = new weight *[size];
   for (size_t i = 0; i < size; i++) {
     expectedMatrix[i] = new weight[size];
@@ -136,10 +119,7 @@ TEST(GraphTests, LoadGraphFromFile_WeightedUndirectedGraph_GraphHasValidValues) 
       .Times(1)
       .WillOnce(Return(expectedVertexMap));
 
-    auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   // Act
   graph.loadGraphFromFile(filename);
@@ -173,10 +153,7 @@ TEST(GraphTests, LoadGraphFromFile_WeightedDirectedGraph_GraphHasValidValues) {
 
   const int size = 4;
   weight matrix[size][size] = {
-      {0, 29, 0, 21},
-      {29, 0, 15, 29},
-      {20, 15, 0, 0},
-      {21, 29, 15, 0}};
+      {0, 29, 0, 21}, {29, 0, 15, 29}, {20, 15, 0, 0}, {21, 29, 15, 0}};
   weight **expectedMatrix = new weight *[size];
   for (size_t i = 0; i < size; i++) {
     expectedMatrix[i] = new weight[size];
@@ -200,10 +177,7 @@ TEST(GraphTests, LoadGraphFromFile_WeightedDirectedGraph_GraphHasValidValues) {
       .Times(1)
       .WillOnce(Return(expectedVertexMap));
 
-    auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   // Act
   graph.loadGraphFromFile(filename);
@@ -225,7 +199,8 @@ TEST(GraphTests, LoadGraphFromFile_WeightedDirectedGraph_GraphHasValidValues) {
   }
 }
 
-TEST(GraphTests, LoadGraphFromFile_UnweightedDirectedGraph_GraphHasValidValues) {
+TEST(GraphTests,
+     LoadGraphFromFile_UnweightedDirectedGraph_GraphHasValidValues) {
   // Arrange
   MatrixReaderMock matrixReaderMock;
   VertexMapBuilderMock vertexMapBuilderMock;
@@ -237,10 +212,7 @@ TEST(GraphTests, LoadGraphFromFile_UnweightedDirectedGraph_GraphHasValidValues) 
 
   const int size = 4;
   weight matrix[size][size] = {
-      {0, 1, 0, 1},
-      {1, 0, 1, 1},
-      {1, 1, 0, 0},
-      {1, 1, 1, 0}};
+      {0, 1, 0, 1}, {1, 0, 1, 1}, {1, 1, 0, 0}, {1, 1, 1, 0}};
   weight **expectedMatrix = new weight *[size];
   for (size_t i = 0; i < size; i++) {
     expectedMatrix[i] = new weight[size];
@@ -264,10 +236,7 @@ TEST(GraphTests, LoadGraphFromFile_UnweightedDirectedGraph_GraphHasValidValues) 
       .Times(1)
       .WillOnce(Return(expectedVertexMap));
 
-    auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   // Act
   graph.loadGraphFromFile(filename);
@@ -289,7 +258,8 @@ TEST(GraphTests, LoadGraphFromFile_UnweightedDirectedGraph_GraphHasValidValues) 
   }
 }
 
-TEST(GraphTests, LoadGraphFromFile_UnweightedUndirectedGraph_GraphHasValidValues) {
+TEST(GraphTests,
+     LoadGraphFromFile_UnweightedUndirectedGraph_GraphHasValidValues) {
   // Arrange
   MatrixReaderMock matrixReaderMock;
   VertexMapBuilderMock vertexMapBuilderMock;
@@ -301,10 +271,7 @@ TEST(GraphTests, LoadGraphFromFile_UnweightedUndirectedGraph_GraphHasValidValues
 
   const int size = 4;
   weight matrix[size][size] = {
-      {0, 1, 1, 1},
-      {1, 0, 1, 1},
-      {1, 1, 0, 1},
-      {1, 1, 1, 0}};
+      {0, 1, 1, 1}, {1, 0, 1, 1}, {1, 1, 0, 1}, {1, 1, 1, 0}};
   weight **expectedMatrix = new weight *[size];
   for (size_t i = 0; i < size; i++) {
     expectedMatrix[i] = new weight[size];
@@ -328,10 +295,7 @@ TEST(GraphTests, LoadGraphFromFile_UnweightedUndirectedGraph_GraphHasValidValues
       .Times(1)
       .WillOnce(Return(expectedVertexMap));
 
-    auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   // Act
   graph.loadGraphFromFile(filename);
@@ -389,10 +353,7 @@ TEST(GraphTests, GetVertexById_IndexIsNotPresent_ThrowsException) {
       .Times(1)
       .WillOnce(Return(expectedVertexMap));
 
-    auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
   graph.loadGraphFromFile(filename);
 
   // Act
@@ -413,10 +374,7 @@ TEST(GraphTests, ExportGraphToDot_ExportsGraphToExistentFile) {
 
   std::string expectedString = "testString";
 
-    auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   EXPECT_CALL(dotBuilderMock, buildDotFromGraph(_))
       .Times(1)
@@ -444,10 +402,7 @@ TEST(GraphTests, ExportGraphToDot_ExportsGraphToNonExistentFile) {
 
   std::string expectedString = "testString";
 
-    auto graph = Graph(
-	matrixReaderMock,
-	vertexMapBuilderMock,
-	dotBuilderMock);
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
 
   EXPECT_CALL(dotBuilderMock, buildDotFromGraph(_))
       .Times(1)

@@ -4,11 +4,11 @@
 #include "IDotBuilder.h"
 
 class DotBuilder : public IDotBuilder {
-private:
+ private:
   bool isGraphDirected(weight **adjacencyMatrix, int matrixSize) const noexcept;
   std::string buildWeightLabel(weight weight) const noexcept;
 
-public:
+ public:
   std::string buildDotFromGraph(IGraph const &graph) const noexcept;
 };
 

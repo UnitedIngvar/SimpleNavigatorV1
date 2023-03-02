@@ -8,7 +8,8 @@ class DotBuilderMock : public IDotBuilder {
 public:
   ~DotBuilderMock() override = default;
 
-  MOCK_METHOD(std::string, buildDotFromGraph, (IGraph const &graph), (const, noexcept, override));
+  MOCK_METHOD(std::string, buildDotFromGraph, (IGraph const &graph),
+              (const, noexcept, override));
 };
 
 #endif
