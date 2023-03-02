@@ -1,6 +1,6 @@
 #include "MatrixReader.h"
-
 #include "Constants.h"
+#include <iostream>
 
 int MatrixReader::readNextNumberOrThrow(
     std::string const &line, size_t *offset,
@@ -13,7 +13,7 @@ int MatrixReader::readNextNumberOrThrow(
   }
 
   // Получаем позицию следующего числа
-  const char *digits = Constants::getDigits();
+  const std::string digits = Constants::getDigits();
   size_t numberPosition = line.find_first_of(digits, *offset);
   if (numberPosition == std::string::npos) {
     throw std::invalid_argument(notFoundErrorMessage);
@@ -28,7 +28,6 @@ int MatrixReader::readNextNumberOrThrow(
   // Получаем строку, содержащую число
   std::string numberStr = line.substr(numberPosition, numberLength);
 
-  // TODO: хорошо бы придумать что-то поэлегантнее
   int number;
   try {
     number = std::stoi(numberStr);
@@ -38,6 +37,12 @@ int MatrixReader::readNextNumberOrThrow(
   }
 
   // двигаем смещение по строке на позицию после текущего числа
+  // std::cout << "line: " << line << std::endl;
+  // std::cout << "offset: " << *offset << std::endl;
+  // std::cout << "num: " << numberStr << std::endl;
+  // std::cout << "num pos: " << numberPosition << std::endl;
+  // std::cout << "num pos after: " << positionAfterNumber << std::endl;
+  // std::cout << "num len: " << numberLength << std::endl;
   *offset = numberPosition + numberLength + 1;
   return number;
 }
@@ -88,6 +93,8 @@ weight **MatrixReader::readAdjacencyMatrix(std::ifstream &file,
   }
 
   for (int i = 0; i < matrixSize; i++) {
+    bool hasAdjacency = false;
+
     size_t offset = 0;
     if (file.peek() == EOF) {
       throw std::invalid_argument(
@@ -99,7 +106,14 @@ weight **MatrixReader::readAdjacencyMatrix(std::ifstream &file,
     for (int j = 0; j < matrixSize; j++) {
       weight number = readNextNumberOrThrow(
           line, &offset, "invalid number of columns in the adjecency matrix");
+      if (number != 0) {
+        hasAdjacency = true;
+      }
       matrix[i][j] = number;
+    }
+
+    if (!hasAdjacency) {
+      throw std::invalid_argument("A vertex should have at least one adjacency");
     }
   }
 

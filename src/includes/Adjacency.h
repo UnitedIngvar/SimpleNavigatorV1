@@ -16,6 +16,7 @@ class Adjacency {
 
  public:
   Adjacency(Vertex const &vertex, weight weight);
+  Adjacency(Adjacency const &other);
 
   Vertex const &getVertex() const;
   weight getWeight() const;

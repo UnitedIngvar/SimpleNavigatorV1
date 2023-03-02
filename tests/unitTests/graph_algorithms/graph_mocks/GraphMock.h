@@ -16,6 +16,8 @@ public:
               (const, override));
   MOCK_METHOD(int, getMatrixSize, (), (const, override));
   MOCK_METHOD(weight **, getAdjacencyMatrix, (), (const, override));
+  MOCK_METHOD(bool, isDirected, (), (const, override));
+  MOCK_METHOD(bool, isWeighted, (), (const, override));
 };
 
 #endif

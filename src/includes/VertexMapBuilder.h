@@ -6,7 +6,7 @@
 class VertexMapBuilder : public IVertexMapBuilder {
  public:
   std::map<vertex_id, Vertex *> buildVerticesMap(weight **adjacencyMatrix,
-                                                 int matrixSize) const;
+                                                 int matrixSize) const noexcept;
   ~VertexMapBuilder();
 };
 

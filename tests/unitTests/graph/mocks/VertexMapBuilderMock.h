@@ -9,7 +9,7 @@ public:
   ~VertexMapBuilderMock() override = default;
 
   MOCK_METHOD((std::map<vertex_id, Vertex *>), buildVerticesMap,
-              (weight * *adjacencyMatrix, int matrixSize), (const, override));
+              (weight * *adjacencyMatrix, int matrixSize), (const, noexcept, override));
 };
 
 #endif
