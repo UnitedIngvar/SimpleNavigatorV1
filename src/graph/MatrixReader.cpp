@@ -39,7 +39,6 @@ int MatrixReader::readNextNumberOrThrow(
   }
 
   // двигаем смещение по строке на позицию после текущего числа
-
   *offset = numberPosition + numberLength + 1;
   return number;
 }
