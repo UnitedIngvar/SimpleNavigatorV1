@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef MATRIX_READER_H
 #define MATRIX_READER_H
 

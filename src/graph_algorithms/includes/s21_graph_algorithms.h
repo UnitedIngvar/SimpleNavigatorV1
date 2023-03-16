@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef S21_GRAPH_ALGORITHMS_H
 #define S21_GRAPH_ALGORITHMS_H
 

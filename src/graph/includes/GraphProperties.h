@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef GRAPH_PROPERTIES_H
 #define GRAPH_PROPERTIES_H
 

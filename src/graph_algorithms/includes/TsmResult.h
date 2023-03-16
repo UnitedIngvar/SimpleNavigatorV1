@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef TSMRESULT_H
 #define TSMRESULT_H
 
