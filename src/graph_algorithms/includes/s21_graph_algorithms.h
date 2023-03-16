@@ -2,7 +2,7 @@
 #define S21_GRAPH_ALGORITHMS_H
 
 #include "TsmResult.h"
-#include "s21_graph.h"
+#include "IGraph.h"
 
 class GraphAlgorithms {
  public:

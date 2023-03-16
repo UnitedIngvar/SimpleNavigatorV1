@@ -38,6 +38,15 @@ GraphProperties Graph::determineGraphProperties(weight **adjacencyMatrix,
 }
 
 void Graph::loadGraphFromFile(std::string const &filename) {
+  if (_isInitialized) {
+    for (int i = 0; i < _matrixSize; i++) {
+      delete[] _adjecencyMatrix[i];
+      delete _vertexMap.at(i + 1);
+    }
+
+    delete[] _adjecencyMatrix;
+  }
+
   std::ifstream file(filename);
   if (!file.good()) {
     file.clear();
@@ -55,7 +64,7 @@ void Graph::loadGraphFromFile(std::string const &filename) {
   _vertexMap =
       _vertexMapBuilder.buildVerticesMap(_adjecencyMatrix, _matrixSize);
   _graphProperties = determineGraphProperties(_adjecencyMatrix, _matrixSize);
-  _matrixInitialized = true;
+  _isInitialized = true;
 
   file.close();
 }
@@ -73,7 +82,7 @@ void Graph::exportGraphToDot(std::string const &filename) {
 }
 
 Vertex const &Graph::getVertexById(vertex_id vertexId) const {
-  if (!_matrixInitialized) {
+  if (!_isInitialized) {
     throw std::invalid_argument("matrix is not initialized");
   }
   if (_vertexMap.find(vertexId) == _vertexMap.end()) {
@@ -85,7 +94,7 @@ Vertex const &Graph::getVertexById(vertex_id vertexId) const {
 }
 
 int Graph::getMatrixSize() const {
-  if (_matrixInitialized) {
+  if (_isInitialized) {
     return _matrixSize;
   } else {
     throw std::invalid_argument("matrix is not initialized");
@@ -93,7 +102,7 @@ int Graph::getMatrixSize() const {
 }
 
 weight **Graph::getAdjacencyMatrix() const {
-  if (_matrixInitialized) {
+  if (_isInitialized) {
     return _adjecencyMatrix;
   } else {
     throw std::invalid_argument("matrix is not initialized");
@@ -101,7 +110,7 @@ weight **Graph::getAdjacencyMatrix() const {
 }
 
 bool Graph::isWeighted() const {
-  if (_matrixInitialized) {
+  if (_isInitialized) {
     return _graphProperties.isWeighted;
   } else {
     throw std::invalid_argument("matrix is not initialized");
@@ -109,15 +118,19 @@ bool Graph::isWeighted() const {
 }
 
 bool Graph::isDirected() const {
-  if (_matrixInitialized) {
+  if (_isInitialized) {
     return _graphProperties.isDirected;
   } else {
     throw std::invalid_argument("matrix is not initialized");
   }
 }
 
+bool Graph::isInitialized() const {
+  return _isInitialized;
+}
+
 Graph::~Graph() {
-  if (_matrixInitialized) {
+  if (_isInitialized) {
     for (int i = 0; i < _matrixSize; i++) {
       delete[] _adjecencyMatrix[i];
       delete _vertexMap.at(i + 1);
