@@ -1,7 +1,7 @@
 #include "VertexMapBuilder.h"
 
 std::map<vertex_id, Vertex *> VertexMapBuilder::buildVerticesMap(
-    weight **adjacencyMatrix, int matrixSize) const {
+    weight **adjacencyMatrix, int matrixSize) const noexcept {
   std::vector<Vertex *> vertices;
 
   for (vertex_id vertexId = 1; vertexId <= matrixSize + 1; vertexId++) {

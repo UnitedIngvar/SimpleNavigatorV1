@@ -1,13 +1,41 @@
 #include <algorithm>
 #include <exception>
+#include <iostream>
 #include <vector>
 
 #include "Constants.h"
 #include "s21_graph.h"
 
 Graph::Graph(IMatrixReader const &matrixReader,
-             IVertexMapBuilder const &vertexMapBuilder)
-    : _matrixReader(matrixReader), _vertexMapBuilder(vertexMapBuilder) {}
+             IVertexMapBuilder const &vertexMapBuilder,
+             IDotBuilder const &dotBuilder)
+    : _matrixReader(matrixReader),
+      _vertexMapBuilder(vertexMapBuilder),
+      _dotBuilder(dotBuilder) {}
+
+GraphProperties Graph::determineGraphProperties(weight **adjacencyMatrix,
+                                                int matrixSize) const {
+  bool isDirected = false;
+  bool isWeighted = false;
+
+  for (int i = 0; i < matrixSize; i++) {
+    for (int j = 0; j < matrixSize; j++) {
+      if (adjacencyMatrix[i][j] != 1 && adjacencyMatrix[i][j] != 0) {
+        isWeighted = true;
+      }
+      if (adjacencyMatrix[i][j] != adjacencyMatrix[j][i]) {
+        isDirected = true;
+      }
+
+      if ((isWeighted && isDirected)) {
+        return GraphProperties{.isDirected = isDirected,
+                               .isWeighted = isWeighted};
+      }
+    }
+  }
+
+  return GraphProperties{.isDirected = isDirected, .isWeighted = isWeighted};
+}
 
 void Graph::loadGraphFromFile(std::string const &filename) {
   std::ifstream file(filename);
@@ -16,15 +44,33 @@ void Graph::loadGraphFromFile(std::string const &filename) {
     throw std::invalid_argument("file could not be opened");
   }
 
-  _matrixSize = _matrixReader.readMatrixSize(file);
-  _adjecencyMatrix = _matrixReader.readAdjacencyMatrix(file, _matrixSize);
+  try {
+    _matrixSize = _matrixReader.readMatrixSize(file);
+    _adjecencyMatrix = _matrixReader.readAdjacencyMatrix(file, _matrixSize);
+  } catch (std::invalid_argument ex) {
+    file.close();
+    throw ex;
+  }
+
   _vertexMap =
       _vertexMapBuilder.buildVerticesMap(_adjecencyMatrix, _matrixSize);
-
+  _graphProperties = determineGraphProperties(_adjecencyMatrix, _matrixSize);
   _matrixInitialized = true;
+
+  file.close();
 }
 
-void Graph::exportGraphToDot(std::string const &filename) { (void)filename; }
+void Graph::exportGraphToDot(std::string const &filename) {
+  std::ofstream file(filename);
+  if (!file.good()) {
+    file.clear();
+    throw std::invalid_argument("file could not be opened or created");
+  }
+
+  file << _dotBuilder.buildDotFromGraph(*this);
+
+  file.close();
+}
 
 Vertex const &Graph::getVertexById(vertex_id vertexId) const {
   if (!_matrixInitialized) {
@@ -49,6 +95,22 @@ int Graph::getMatrixSize() const {
 weight **Graph::getAdjacencyMatrix() const {
   if (_matrixInitialized) {
     return _adjecencyMatrix;
+  } else {
+    throw std::invalid_argument("matrix is not initialized");
+  }
+}
+
+bool Graph::isWeighted() const {
+  if (_matrixInitialized) {
+    return _graphProperties.isWeighted;
+  } else {
+    throw std::invalid_argument("matrix is not initialized");
+  }
+}
+
+bool Graph::isDirected() const {
+  if (_matrixInitialized) {
+    return _graphProperties.isDirected;
   } else {
     throw std::invalid_argument("matrix is not initialized");
   }

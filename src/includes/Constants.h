@@ -1,10 +1,12 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <string>
+
 class Constants {
  public:
-  static const char *getWhiteSpaces();
-  static const char *getDigits();
+  static std::string const &getWhiteSpaces();
+  static std::string const &getDigits();
 };
 
 #endif

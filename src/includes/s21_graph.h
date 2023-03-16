@@ -5,6 +5,8 @@
 #include <map>
 #include <string>
 
+#include "DotBuilder.h"
+#include "GraphProperties.h"
 #include "IGraph.h"
 #include "IMatrixReader.h"
 #include "IVertexMapBuilder.h"
@@ -15,15 +17,22 @@ class Graph : public IGraph {
   int _matrixSize;
   weight **_adjecencyMatrix;
   std::map<vertex_id, Vertex *> _vertexMap;
+  GraphProperties _graphProperties;
+
   bool _matrixInitialized = false;
 
   // Injected
   IMatrixReader const &_matrixReader;
   IVertexMapBuilder const &_vertexMapBuilder;
+  IDotBuilder const &_dotBuilder;
+
+  GraphProperties determineGraphProperties(weight **adjacencyMatrix,
+                                           int matrixSize) const;
 
  public:
   Graph(IMatrixReader const &matrixReader,
-        IVertexMapBuilder const &vertexMapBuilder);
+        IVertexMapBuilder const &vertexMapBuilder,
+        IDotBuilder const &dotBuilder);
 
   void loadGraphFromFile(std::string const &filename);
   void exportGraphToDot(std::string const &filename);
@@ -31,6 +40,8 @@ class Graph : public IGraph {
   Vertex const &getVertexById(vertex_id vertexId) const;
   int getMatrixSize() const;
   weight **getAdjacencyMatrix() const;
+  bool isWeighted() const;
+  bool isDirected() const;
 
   ~Graph();
 };

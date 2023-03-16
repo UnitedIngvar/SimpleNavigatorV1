@@ -11,6 +11,8 @@ class IGraph {
   virtual Vertex const &getVertexById(vertex_id vertexId) const = 0;
   virtual int getMatrixSize() const = 0;
   virtual weight **getAdjacencyMatrix() const = 0;
+  virtual bool isDirected() const = 0;
+  virtual bool isWeighted() const = 0;
 };
 
 #endif

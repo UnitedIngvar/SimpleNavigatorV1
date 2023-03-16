@@ -8,7 +8,7 @@
 class IVertexMapBuilder {
  public:
   virtual std::map<vertex_id, Vertex *> buildVerticesMap(
-      weight **adjacencyMatrix, int matrixSize) const = 0;
+      weight **adjacencyMatrix, int matrixSize) const noexcept = 0;
 
   virtual ~IVertexMapBuilder() = default;
 };
