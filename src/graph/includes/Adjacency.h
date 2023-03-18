@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef ADJACENCY_H
 #define ADJACENCY_H
 

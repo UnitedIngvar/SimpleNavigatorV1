@@ -2,41 +2,46 @@ TESTS = tests
 IGNORE_ERROR = || true
 
 PROJECT_DIR				= ../src
-PROJECT_HEADERS_DIR		= $(PROJECT_DIR)/includes/
-PROJECT_INTERFACES_DIR	= $(PROJECT_DIR)/interfaces/
-PROJECT_INCLUDES		= -I$(PROJECT_HEADERS_DIR) -I$(PROJECT_INTERFACES_DIR)
-PROJECT_SRCS			:= $(filter-out $(PROJECT_DIR)/main.cpp, \
-								$(shell find $(PROJECT_DIR) -name "*.cpp"))
-PROJECT_OBJS			= $(patsubst %.cpp, %.o, $(PROJECT_SRCS))
+PROJECT_LIB_DIR			= $(PROJECT_DIR)/lib
+PROJECT_GRAPH_LIB		= $(PROJECT_LIB_DIR)/libGraph.a
+PROJECT_ALGOS_LIB		= $(PROJECT_LIB_DIR)/libAlgos.a
+PROJECT_LIBS			= $(PROJECT_GRAPH_LIB) $(PROJECT_ALGOS_LIB)
+PROJECT_GRAPH_HDR_DIR	= $(PROJECT_DIR)/graph/includes/
+PROJECT_GRAPH_INFS_DIR	= $(PROJECT_DIR)/graph/interfaces/
+PROJECT_ALGOS_HDR_DIR	= $(PROJECT_DIR)/graph_algorithms/includes/
+PROJECT_INCLUDES		= -I$(PROJECT_GRAPH_HDR_DIR) -I$(PROJECT_GRAPH_INFS_DIR) -I$(PROJECT_ALGOS_HDR_DIR)
 
 TESTS_DIR				= unitTests
-TESTS_INCLUDES			=
 TESTS_SRCS				= $(shell find $(TESTS_DIR) -name "*.cpp")
+TESTS_GRAPH_HEADERS		= $(TESTS_DIR)/graph/mocks
+TESTS_ALGOS_HEADERS		= $(TESTS_DIR)/graph_algorithms/mocks
+TESTS_INCLUDES			= -I$(TESTS_GRAPH_HEADERS) -I$(TESTS_ALGOS_HEADERS)
 TESTS_OBJS				= $(patsubst %.cpp, %.o, $(TESTS_SRCS))
 TESTS_DFILES			= $(patsubst %.cpp, %.d, $(TESTS_SRCS))
 
-ALL_SRCS				= $(PROJECT_SRCS) $(TESTS_SRCS)
-ALL_OBJECTS				= $(PROJECT_OBJS) $(TESTS_OBJS)
+ALL_OBJECTS				= $(PROJECT_LIBS) $(TESTS_OBJS)
 
 GTEST_DIR				= dependencies
 GTEST_DIR_REPOSITORY	= $(GTEST_DIR)/googletest
 GTEST_HEADERS_DIR		= $(GTEST_DIR_REPOSITORY)/googletest/include/gtest
 GTEST_INCLUDES			= -I$(GTEST_HEADERS_DIR)
-GTEST_LIB				= -pthread $(GTEST_DIR)/lib/libgtest_main.a $(GTEST_DIR)/lib/libgtest.a
+GTEST_LIB				= $(GTEST_DIR)/lib/libgtest_main.a $(GTEST_DIR)/lib/libgtest.a
 
 GMOCK_DIR				= dependencies
 GMOCK_HEADERS_DIR		= $(GTEST_DIR_REPOSITORY)/googlemock/include/gmock
 GMOCK_INCLUDES			= -I$(GMOCK_HEADERS_DIR)
-GMOCK_LIB				= -pthread $(GTEST_DIR)/lib/libgmock_main.a $(GTEST_DIR)/lib/libgmock.a
+GMOCK_LIB				= $(GTEST_DIR)/lib/libgmock_main.a $(GTEST_DIR)/lib/libgmock.a
+
+GTEST_BUILD				= $(GTEST_LIB) $(GMOCK_LIB)
 
 CPPFLAGS += -isystem
 CXXFLAGS += -g -Wall -Wextra -pthread -std=c++17 #-fsanitize=address,undefined -fno-sanitize-recover -fstack-protector -O0
 
-all: build_gtest run
+all: $(GTEST_BUILD) run
 
-leaks: build_gtest run_leaks
+leaks: $(GTEST_BUILD) run_leaks
 
-build_gtest:
+$(GTEST_BUILD):
 	@cd $(GTEST_DIR_REPOSITORY); \
 	mkdir -p build && cd build; \
 	cmake .. && make && make install; \
@@ -53,28 +58,22 @@ fclean: clean
 
 re: fclean all
 
-$(PROJECT_OBJS):
-	cd $(PROJECT_DIR) && $(MAKE) objects
-	rm -f $(PROJECT_DIR)/main.o $(PROJECT_DIR)/main.d
-
 %.o: %.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(GTEST_INCLUDES) $(GMOCK_INCLUDES) $(PROJECT_INCLUDES) $< -o $@ -MMD
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(GTEST_INCLUDES) $(GMOCK_INCLUDES) $(PROJECT_INCLUDES) $(TESTS_INCLUDES) $< -o $@ -MMD
 
-$(TESTS): $(PROJECT_OBJS) $(TESTS_OBJS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(ALL_OBJECTS) $(GTEST_LIB) $(GMOCK_LIB) $(GTEST_INCLUDES) $(GMOCK_INCLUDES) -o $@
+$(PROJECT_LIBS):
+	cd $(PROJECT_DIR) && $(MAKE) libs
+
+$(TESTS): $(ALL_OBJECTS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(ALL_OBJECTS) $(GTEST_LIB) $(TESTS_INCLUDES) $(GMOCK_LIB) $(GTEST_INCLUDES) $(GMOCK_INCLUDES) -o $@
 
 run : $(TESTS)
 	./$(TESTS) $(IGNORE_ERROR)
-	$(MAKE) fclean
+	$(MAKE) clean
 
 run_leaks : $(TESTS)
 	leaks --atExit -- ./$(TESTS) $(IGNORE_ERROR)
-	$(MAKE) fclean
-
-# TODO: поизучать, как правильно
-# считать покрытие тестами: https://stackoverflow.com/questions/2359344/google-test-code-coverage
-#coverage: $(TESTS)
-#		gcov $(PROJECT_SRCS)
+	$(MAKE) clean
 
 include $(wildcard $(TESTS_DFILES))
 

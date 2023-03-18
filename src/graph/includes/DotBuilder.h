@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef DOTBUILDER_H
 #define DOTBUILDER_H
 

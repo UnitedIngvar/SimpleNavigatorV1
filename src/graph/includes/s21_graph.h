@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef S21_GRAPH_H
 #define S21_GRAPH_H
 
@@ -19,7 +21,7 @@ class Graph : public IGraph {
   std::map<vertex_id, Vertex *> _vertexMap;
   GraphProperties _graphProperties;
 
-  bool _matrixInitialized = false;
+  bool _isInitialized = false;
 
   // Injected
   IMatrixReader const &_matrixReader;
@@ -42,6 +44,7 @@ class Graph : public IGraph {
   weight **getAdjacencyMatrix() const;
   bool isWeighted() const;
   bool isDirected() const;
+  bool isInitialized() const;
 
   ~Graph();
 };

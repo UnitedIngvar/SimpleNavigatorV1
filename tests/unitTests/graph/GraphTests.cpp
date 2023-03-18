@@ -2,9 +2,9 @@
 
 #include "gmock.h"
 #include "gtest.h"
-#include "mocks/DotBuilderMock.h"
-#include "mocks/MatrixReaderMock.h"
-#include "mocks/VertexMapBuilderMock.h"
+#include "DotBuilderMock.h"
+#include "MatrixReaderMock.h"
+#include "VertexMapBuilderMock.h"
 #include "s21_graph.h"
 #include <filesystem>
 
