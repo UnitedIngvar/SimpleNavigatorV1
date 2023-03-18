@@ -6,6 +6,14 @@
 #include "MatrixReader.h"
 #include "VertexMapBuilder.h"
 #include "DotBuilder.h"
+#include <limits>
+
+void		ConsoleApp::askToPressAnyKey()
+{
+  std::cout << "Press ENTER to continue . . . ";
+  std::cin.ignore();
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+}
 
 bool		ConsoleApp::tryParseIntFromInput(int *numPtr)
 {
@@ -43,12 +51,14 @@ command ConsoleApp::getCommand() {
     if (!tryParseIntFromInput(&number))
     {
       std::cout << "invalid input. Input should be of integer type. Try again." << std::endl;
+      askToPressAnyKey();
       continue;
     }
 
     if (number > MAX_COMMAND || number < MIN_COMMAND) {
       std::cout << number
                 << " is out of bounds of expected command numbers. Try again" << std::endl;
+      askToPressAnyKey();
       continue;
     }
 
@@ -64,6 +74,7 @@ void ConsoleApp::executeCommand(command command, Graph &graph) {
       std::string filename;
       std::cin >> filename;
       graph.loadGraphFromFile(filename);
+      std::cout << "Graph has been successfully loaded!" << std::endl;
 	    break;
     }
     case breadthFirstSearch:
@@ -102,7 +113,7 @@ void ConsoleApp::executeCommand(command command, Graph &graph) {
         std::cout << "invalid input. Input should be of integer type. Try again." << std::endl;
         return;
       }
-            if (vertexId >= graph.getMatrixSize() || vertexId < 1)
+      if (vertexId >= graph.getMatrixSize() || vertexId < 1)
       {
         std::cout << "out of boudns of expected vetex ids. Try again." << std::endl;
         return;
@@ -212,12 +223,15 @@ void ConsoleApp::start() {
 	}
     try {
       executeCommand(command, graph);
+      askToPressAnyKey();
     }
     catch (std::invalid_argument &ex) {
       std::cout << "invalid argument: " << ex.what() << std::endl;
+      askToPressAnyKey();
     }
     catch (std::exception &ex) {
       std::cout << "unexpected exception: " << ex.what() << std::endl;
+      askToPressAnyKey();
     }
   }
 }

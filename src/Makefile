@@ -38,14 +38,16 @@ all: $(NAME)
 $(LIB_DIR):
 		mkdir $(LIB_DIR)
 
-$(GRAPH_OBJS): $(GRAPH_SRCS)
+libs: $(ALGOS_LIB) $(GRAPH_LIB)
+
+$(GRAPH_DIR)/%.o: $(GRAPH_DIR)/%.cpp
 		$(CC) $(CFLAGS) -c $(GRAPH_INCLUDES) $< -o $@ -MMD
 
 $(GRAPH_LIB): $(GRAPH_OBJS) $(LIB_DIR)
 		$(AR) $(GRAPH_LIB) $(GRAPH_OBJS)
 
 
-$(ALGOS_OBJS): $(ALGOS_SRCS) $(LIB_DIR)
+$(ALGOS_DIR)/%.o: $(ALGOS_DIR)/%.cpp
 		$(CC) $(CFLAGS) -c $(ALGOS_INCLUDES) $< -o $@ -MMD
 
 $(ALGOS_LIB): $(ALGOS_OBJS)
@@ -54,8 +56,6 @@ $(ALGOS_LIB): $(ALGOS_OBJS)
 
 $(NAME): $(GRAPH_LIB) $(ALGOS_LIB) $(APP_SRCS)
 		$(CC) $(CFLAGS) $(APP_SRCS) $(GRAPH_LIB) $(ALGOS_LIB) $(APP_INCLUDES) $(ALGOS_INCLUDES) -o $(NAME)
-
-objects: $(GRAPH_OBJS) $(ALGOS_OBJS) $(APP_OBJS)
 
 clean:
 		@rm -f $(GRAPH_OBJS) $(ALGOS_OBJS) $(APP_OBJS) \

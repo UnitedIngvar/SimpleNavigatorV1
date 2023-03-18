@@ -20,6 +20,7 @@ enum command {
 
 class ConsoleApp {
 private:
+	void		askToPressAnyKey();
 	bool		tryParseIntFromInput(int *numPthr);
 	command getCommand();
 	void executeCommand(command command, Graph &graph);
