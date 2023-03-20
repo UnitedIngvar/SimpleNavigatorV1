@@ -239,12 +239,142 @@ weight **GraphAlgorithms::getLeastSpanningTree(IGraph &graph) {
 // нахождение самого выгодного (короткого) маршрута,
 // проходящего через все вершины графа хотя бы по одному разу с возвратом в
 // исходную вершину
+
+
+#define ALPHA   1           // вес фермента
+#define BETTA   3           // коэффициент эвристики
+
+#define T_MAX   100         // время жизни колонии
+#define CNT_ANTS 20         // количество муравьев в колонии
+#define Q       100         // количество
+#define RHO     0.5         // коэффициент испарения феромона
+
+struct AntsWay {
+	int itabu; //количество вершин
+	int distance;
+	int *tabu; //массив вершин
+};
+
+// вероятность перехода муравья ant в вершину to
+double probability(vertex_id to, AntsWay ant, double **pheromone, double **distances, int sizeGraph) {
+	// если вершина уже посещена, возвращаем 0
+	for (int i = 0; i < ant.itabu; i++) {
+		if (to == ant.tabu[i]) {
+			return 0;
+		}
+	}
+
+	double sum = 0.0;
+	vertex_id from = ant.tabu[ant.itabu - 1];
+	// считаем сумму в знаменателе
+	for (vertex_id i = 0; i < sizeGraph; i++) {
+		bool visited = false;
+		// проверяем, посещал ли муравей i вершину
+		for (int j = 0; j < ant.itabu; j++) {
+			if (i == ant.tabu[j]) {
+				visited = true;
+			}
+		}
+		// если нет, тогда прибавляем к общей сумме
+		if (!visited) {
+			sum += pow(pheromone[from][i], ALPHA) * pow(distances[from][i], BETTA);
+		}
+	}
+	// возвращаем значение вероятности
+	return pow(pheromone[from][to], ALPHA) * pow(distances[from][to], BETTA) / sum;
+}
+
 TsmResult GraphAlgorithms::solveTravelingSalesmanProblem(IGraph &graph) {
 	distance sizeGraph = graph.getMatrixSize();
 
+	// инициализация данных о лучшем маршруте
 	TsmResult result;
-	result.vertices = std::vector<vertex_id>(sizeGraph);
-	result.distance = 0;
+	result.vertices = std::vector<int>(sizeGraph + 1);
+	result.distance = -1;
 
+	// инициализация данных о расстоянии и количестве феромона
+	weight **adjacencyMatrix = graph.getAdjacencyMatrix();
+
+//	int **distances = new int *[sizeGraph];
+	double **distances = new double *[sizeGraph];
+	double **pheromone = new double *[sizeGraph];
+
+	for (vertex_id i = 0; i < sizeGraph; i++) {
+		distances[i] = new double[sizeGraph];
+		pheromone[i] = new double[sizeGraph];
+		for (vertex_id j = 0; j < sizeGraph; j++) {
+			if (i != j) {
+//				distances[i][j] = 1.0 / adjacencyMatrix[i][j];
+				distances[i][j] = adjacencyMatrix[i][j];
+			}
+			pheromone[i][j] = 1.0 / sizeGraph; // ?
+		}
+	}
+
+	// инициализация муравьев
+	AntsWay ants[CNT_ANTS];
+	for (int i = 0; i < CNT_ANTS; i++) {
+		ants[i].itabu = 0;
+		ants[i].distance = 0.0;
+		ants[i].tabu = new int[sizeGraph];
+		ants[i].tabu[ants[i].itabu++] = 0; // начинаем с первой вершины
+	}
+
+	int itabu = 0;
+	// основной цикл
+	for (int t = 0; t < T_MAX; t++) {
+		// цикл по муравьям
+		for (int a = 0; a < CNT_ANTS; a++) {
+			// поиск маршрута для a-го муравья
+			while (ants[a].tabu[ants[a].itabu - 1] != 10) { // пока не вернемся в начальную вершину???
+				vertex_id idVertexWithMaxProbability = -1;
+				double maxProbability = 0.0;
+				for (vertex_id j = 0; j < sizeGraph; j++) {
+					// Проверка вероятности перехода в вершину j
+					if (ants[a].tabu[ants[a].itabu - 1] != j) {
+						double currProbability = probability(j, ants[a], pheromone, distances, sizeGraph);
+						if (currProbability && currProbability >= maxProbability) {
+							maxProbability = currProbability;
+							idVertexWithMaxProbability = j;
+						}
+					}
+				}
+				ants[a].distance += adjacencyMatrix[ants[a].tabu[ants[a].itabu - 1]][idVertexWithMaxProbability];
+				ants[a].tabu[ants[a].itabu++] = idVertexWithMaxProbability;
+			}
+			// оставляем феромон на пути муравья
+			for (int i = 0; i < ants[a].itabu - 1; i++) {
+				vertex_id from = ants[a].tabu[i % ants[a].itabu];
+				vertex_id to = ants[a].tabu[(i + 1) % ants[a].itabu];
+				pheromone[from][to] += Q / ants[a].distance;
+				pheromone[to][from] = pheromone[from][to];
+			}
+
+			// проверка на лучшее решение
+			if (ants[a].distance < result.distance || result.distance < 0) {
+				result.distance = ants[a].distance;
+				itabu = ants[a].itabu;
+				for (int i = 0; i < itabu; i++) {
+					result.vertices[i] = ants[a].tabu[i] + 1;
+				}
+			}
+
+			// обновление муравьев
+			ants[a].itabu = 1;
+			ants[a].distance = 0.0;
+		}
+
+		// цикл по ребрам
+		for (vertex_id i = 0; i < sizeGraph; i++) {
+			for (vertex_id j = 0; j < sizeGraph; j++) {
+				// обновление феромона для ребра (i, j)
+				if (i != j) {
+					pheromone[i][j] *= (1 - RHO);
+				}
+			}
+		}
+	}
+
+	// возвращаем кратчайший маршрут
 	return result;
 }
