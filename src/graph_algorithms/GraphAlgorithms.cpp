@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <queue>
+#include <set>
 #include <stack>
 #include <unordered_set>
 
@@ -93,7 +94,7 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
           distances[vertexId] < minWeight) {
         minVertexId = vertexId;
         minWeight = distances[vertexId];
-        if (minWeight < 0) {  // проверка на наличие отрицательных весов
+        if (minWeight < 0) { // проверка на наличие отрицательных весов
           throw std::invalid_argument(
               "Dijkstra's algorithm only works for graphs with non-negative "
               "weights.");
@@ -115,6 +116,56 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
   }
 
   return distances[vertex2] - distances[vertex1];
+}
+
+std::vector<int> GraphAlgorithms::getShortestPathVectorBetweenVertices(
+    IGraph &graph, int vertex1, int vertex2) {
+  int sizeGraph = graph.getMatrixSize() + 1;
+
+  std::vector<distance> distances(sizeGraph, INT_MAX);
+  std::vector<distance> parents(sizeGraph, -1);
+  parents[vertex1] = vertex1;
+  distances[vertex1] = 0;
+
+  std::unordered_set<vertex_id> visitedVerticesSet;
+  vertex_id minVertexId = 0;
+  weight minWeight;
+
+  while (minVertexId < INT_MAX) {
+    minVertexId = INT_MAX;
+    minWeight = INT_MAX;
+
+    for (vertex_id vertexId = 1; vertexId < sizeGraph; vertexId++) {
+      if (visitedVerticesSet.count(vertexId) == 0 &&
+          distances[vertexId] < minWeight) {
+        minVertexId = vertexId;
+        minWeight = distances[vertexId];
+      }
+    }
+
+    if (minVertexId != INT_MAX) {
+      std::vector<Adjacency> adjacencies =
+          graph.getVertexById(minVertexId).getAdjacencies();
+      for (Adjacency adjacency : adjacencies) {
+        vertex_id to = adjacency.getVertex().getId();
+        if ((minWeight + adjacency.getWeight()) < distances[to]) {
+          distances[to] = (minWeight + adjacency.getWeight());
+          parents[to] = minVertexId;
+        }
+      }
+      visitedVerticesSet.insert(minVertexId);
+    }
+  }
+
+  // восстанавливаем кратчайший путь
+  std::vector<int> result(1, vertex2);
+  while (parents[vertex2] != vertex2) {
+    result.push_back(parents[vertex2]);
+    vertex2 = parents[vertex2];
+  }
+  std::reverse(result.begin(), result.end());
+
+  return result;
 }
 
 // алгоритм Флойда-Уоршелла (поиск кратчайших путей между всеми парами вершин во
@@ -190,8 +241,7 @@ weight **GraphAlgorithms::getLeastSpanningTree(IGraph &graph) {
       std::vector<std::pair<weight, std::pair<vertex_id, vertex_id>>>,
       std::greater<std::pair<weight, std::pair<vertex_id, vertex_id>>>>
       unvisitedVerticesQueue;
-  unvisitedVerticesQueue.push(
-      {0, {1, -1}});  // начинаем с вершины 1, предка нет
+  unvisitedVerticesQueue.push({0, {1, -1}}); // начинаем с вершины 1, предка нет
   std::unordered_set<vertex_id> includedVerticesInSpanningTree;
 
   while (!unvisitedVerticesQueue.empty()) {
@@ -235,146 +285,155 @@ weight **GraphAlgorithms::getLeastSpanningTree(IGraph &graph) {
   return adjacencyMatrixLeastSpanningTree;
 }
 
+// функция считает вероятности перехода в каждую из вершин и возвращает лучшую
+vertex_id getNext(Ant ant, double **pheromone, double **distances,
+                  int sizeGraph) {
+  std::vector<std::pair<vertex_id, double>> result;
+
+  double sum = 0.0;
+  vertex_id from = ant.path.back();
+
+  // считаем сумму в знаменателе
+  for (vertex_id i = 0; i < sizeGraph; i++) {
+    if (ant.tabu.count(i) == 0) {
+      sum += pow(pheromone[from][i], ALPHA) * pow(distances[from][i], BETA);
+    }
+  }
+
+  for (vertex_id i = 0; i < sizeGraph; i++) {
+    // если вершина i не посещена считаем вероятность перехода в неё
+    if (ant.tabu.count(i) == 0) {
+      result.emplace_back(i, pow(pheromone[from][i], ALPHA) *
+                                 pow(distances[from][i], BETA) / sum);
+    }
+  }
+
+  if (result.empty()) {
+    return -1;
+  }
+
+  double x = rand() / double(RAND_MAX); // рандомное число от 0 до 1
+  for (size_t i = 0; i < result.size() - 1; i++) {
+    if (x < result[i].second) {
+      return result[i].first;
+    } else {
+      x -= result[i].second;
+    }
+  }
+
+  return result.back().first;
+}
+
 // решение задачи коммивояжера с помощью муравьиного алгоритма
 // нахождение самого выгодного (короткого) маршрута,
 // проходящего через все вершины графа хотя бы по одному разу с возвратом в
 // исходную вершину
-
-
-#define ALPHA   1           // вес фермента
-#define BETTA   3           // коэффициент эвристики
-
-#define T_MAX   100         // время жизни колонии
-#define CNT_ANTS 20         // количество муравьев в колонии
-#define Q       100         // количество
-#define RHO     0.5         // коэффициент испарения феромона
-
-struct AntsWay {
-	int itabu; //количество вершин
-	int distance;
-	int *tabu; //массив вершин
-};
-
-// вероятность перехода муравья ant в вершину to
-double probability(vertex_id to, AntsWay ant, double **pheromone, double **distances, int sizeGraph) {
-	// если вершина уже посещена, возвращаем 0
-	for (int i = 0; i < ant.itabu; i++) {
-		if (to == ant.tabu[i]) {
-			return 0;
-		}
-	}
-
-	double sum = 0.0;
-	vertex_id from = ant.tabu[ant.itabu - 1];
-	// считаем сумму в знаменателе
-	for (vertex_id i = 0; i < sizeGraph; i++) {
-		bool visited = false;
-		// проверяем, посещал ли муравей i вершину
-		for (int j = 0; j < ant.itabu; j++) {
-			if (i == ant.tabu[j]) {
-				visited = true;
-			}
-		}
-		// если нет, тогда прибавляем к общей сумме
-		if (!visited) {
-			sum += pow(pheromone[from][i], ALPHA) * pow(distances[from][i], BETTA);
-		}
-	}
-	// возвращаем значение вероятности
-	return pow(pheromone[from][to], ALPHA) * pow(distances[from][to], BETTA) / sum;
-}
-
 TsmResult GraphAlgorithms::solveTravelingSalesmanProblem(IGraph &graph) {
-	distance sizeGraph = graph.getMatrixSize();
+  distance sizeGraph = graph.getMatrixSize();
 
-	// инициализация данных о лучшем маршруте
-	TsmResult result;
-	result.vertices = std::vector<int>(sizeGraph + 1);
-	result.distance = -1;
+  // инициализация данных о лучшем маршруте
+  TsmResult result;
+  result.distance = INT_MAX;
 
-	// инициализация данных о расстоянии и количестве феромона
-	weight **adjacencyMatrix = graph.getAdjacencyMatrix();
+  // с помощью алгоритма Флойда-Уоршелла ищем матрицу весов кратчайших путей
+  // между всеми парами вершин
+  distance **weightMatrix = getShortestPathsBetweenAllVertices(graph);
 
-//	int **distances = new int *[sizeGraph];
-	double **distances = new double *[sizeGraph];
-	double **pheromone = new double *[sizeGraph];
+  // инициализация данных о расстоянии и количестве феромона
+  double **distances = new double *[sizeGraph];
+  double **pheromone = new double *[sizeGraph];
 
-	for (vertex_id i = 0; i < sizeGraph; i++) {
-		distances[i] = new double[sizeGraph];
-		pheromone[i] = new double[sizeGraph];
-		for (vertex_id j = 0; j < sizeGraph; j++) {
-			if (i != j) {
-//				distances[i][j] = 1.0 / adjacencyMatrix[i][j];
-				distances[i][j] = adjacencyMatrix[i][j];
-			}
-			pheromone[i][j] = 1.0 / sizeGraph; // ?
-		}
-	}
+  for (vertex_id i = 0; i < sizeGraph; i++) {
+    distances[i] = new double[sizeGraph];
+    pheromone[i] = new double[sizeGraph];
+    for (vertex_id j = 0; j < sizeGraph; j++) {
+      if (i != j) {
+        distances[i][j] = 1.0 / weightMatrix[i][j];
+        pheromone[i][j] = 1.0 / sizeGraph;
+      }
+    }
+  }
 
-	// инициализация муравьев
-	AntsWay ants[CNT_ANTS];
-	for (int i = 0; i < CNT_ANTS; i++) {
-		ants[i].itabu = 0;
-		ants[i].distance = 0.0;
-		ants[i].tabu = new int[sizeGraph];
-		ants[i].tabu[ants[i].itabu++] = 0; // начинаем с первой вершины
-	}
+  // инициализация муравьев
+  Ant ants[CNT_ANTS];
 
-	int itabu = 0;
-	// основной цикл
-	for (int t = 0; t < T_MAX; t++) {
-		// цикл по муравьям
-		for (int a = 0; a < CNT_ANTS; a++) {
-			// поиск маршрута для a-го муравья
-			while (ants[a].tabu[ants[a].itabu - 1] != 10) { // пока не вернемся в начальную вершину???
-				vertex_id idVertexWithMaxProbability = -1;
-				double maxProbability = 0.0;
-				for (vertex_id j = 0; j < sizeGraph; j++) {
-					// Проверка вероятности перехода в вершину j
-					if (ants[a].tabu[ants[a].itabu - 1] != j) {
-						double currProbability = probability(j, ants[a], pheromone, distances, sizeGraph);
-						if (currProbability && currProbability >= maxProbability) {
-							maxProbability = currProbability;
-							idVertexWithMaxProbability = j;
-						}
-					}
-				}
-				ants[a].distance += adjacencyMatrix[ants[a].tabu[ants[a].itabu - 1]][idVertexWithMaxProbability];
-				ants[a].tabu[ants[a].itabu++] = idVertexWithMaxProbability;
-			}
-			// оставляем феромон на пути муравья
-			for (int i = 0; i < ants[a].itabu - 1; i++) {
-				vertex_id from = ants[a].tabu[i % ants[a].itabu];
-				vertex_id to = ants[a].tabu[(i + 1) % ants[a].itabu];
-				pheromone[from][to] += Q / ants[a].distance;
-				pheromone[to][from] = pheromone[from][to];
-			}
+  // время жизни муравьиной колонии
+  for (int t = 0; t < T_MAX; t++) {
 
-			// проверка на лучшее решение
-			if (ants[a].distance < result.distance || result.distance < 0) {
-				result.distance = ants[a].distance;
-				itabu = ants[a].itabu;
-				for (int i = 0; i < itabu; i++) {
-					result.vertices[i] = ants[a].tabu[i] + 1;
-				}
-			}
+    // цикл по муравьям
+    for (auto &ant : ants) {
+      // инициализация муравья
+      ant.distance = 0.0;
+      ant.tabu.clear();
+      ant.tabu.insert(0);
+      ant.path.clear();
+      ant.path.push_back(0);
 
-			// обновление муравьев
-			ants[a].itabu = 1;
-			ants[a].distance = 0.0;
-		}
+      // поиск маршрута для a-го муравья
+      while (true) { // пока не посетим все вершины
+        // получаем следущую вершину высчитывая вероятности
+        vertex_id to = getNext(ant, pheromone, distances, sizeGraph);
+        if (to == -1) {
+          break;
+        }
 
-		// цикл по ребрам
-		for (vertex_id i = 0; i < sizeGraph; i++) {
-			for (vertex_id j = 0; j < sizeGraph; j++) {
-				// обновление феромона для ребра (i, j)
-				if (i != j) {
-					pheromone[i][j] *= (1 - RHO);
-				}
-			}
-		}
-	}
+        ant.distance += weightMatrix[ant.path.back()][to];
+        ant.tabu.insert(to);
+        ant.path.push_back(to);
+      }
 
-	// возвращаем кратчайший маршрут
-	return result;
+      ant.distance += weightMatrix[ant.path.back()][0];
+      ant.path.push_back(0);
+
+      // проверка на лучшее решение и обновление пути
+      if (ant.distance < result.distance) {
+        result.distance = ant.distance;
+        result.vertices = ant.path;
+      }
+    }
+
+    // цикл по ребрам
+    for (vertex_id i = 0; i < sizeGraph; i++) {
+      for (vertex_id j = 0; j < sizeGraph; j++) {
+        // испарение феромона для ребра (i, j)
+        if (i != j) {
+          pheromone[i][j] *= PH_EVAROPATION;
+        }
+      }
+    }
+
+    // оставляем феромон на пути муравья
+    for (auto &ant : ants) {
+      for (size_t i = 0; i < ant.path.size() - 1; i++) {
+        vertex_id from = ant.path[i];
+        vertex_id to = ant.path[i + 1];
+        pheromone[from][to] += Q_PH / ant.distance;
+      }
+    }
+  }
+
+  std::vector<int> newVertices(1, 1);
+  for (size_t i = 0; i < result.vertices.size(); i++) {
+    result.vertices[i]++; // возвращаем 1-индексацию
+    if (i > 0) {
+      // с помощью алгоритма Дейкстры восстанавливаем кратчайший путь
+      std::vector<int> shortestPath = getShortestPathVectorBetweenVertices(
+          graph, result.vertices[i - 1], result.vertices[i]);
+      newVertices.insert(newVertices.end(), shortestPath.begin() + 1,
+                         shortestPath.end());
+    }
+  }
+  result.vertices = newVertices;
+
+  for (vertex_id i = 0; i < sizeGraph; i++) {
+    delete[] distances[i];
+    delete[] weightMatrix[i];
+    delete[] pheromone[i];
+  }
+  delete[] distances;
+  delete[] pheromone;
+  delete[] weightMatrix;
+
+  // возвращаем кратчайший маршрут
+  return result;
 }
