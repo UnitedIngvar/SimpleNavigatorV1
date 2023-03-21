@@ -3,6 +3,8 @@
 #ifndef TSM_H
 #define TSM_H
 
+#include <set>
+
 #define ALPHA 1            // вес феромона
 #define BETA 1             // коэффициент эвристики
 #define PH_EVAROPATION 0.8 // коэффициент испарения феромона после каждого цикла

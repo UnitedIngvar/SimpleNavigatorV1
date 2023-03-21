@@ -1,4 +1,4 @@
-NAME					= greph
+NAME					= graph
 
 LIB_DIR					= ./lib
 GRAPH_LIB				= $(LIB_DIR)/libGraph.a
