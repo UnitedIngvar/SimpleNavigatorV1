@@ -1,5 +1,7 @@
-#ifndef QUEUE_HPP
-#define QUEUE_HPP
+#pragma once
+
+#ifndef STACK_H
+#define STACK_H
 
 #include <memory>
 #include <utility>
@@ -7,7 +9,7 @@
 
 namespace ft {
 	template<class T, class Container = std::vector<T> >
-	class queue {
+	class stack {
 	public:
 		typedef Container 							container_type;
 		typedef typename Container::value_type 		value_type;
@@ -20,33 +22,25 @@ namespace ft {
 	public:
 		
 		/*Constructors etc*/
-		queue() : queue(Container()) {}
+		stack() : stack(Container()) {}
 		
-		explicit queue(const Container &cont) : _cont(cont) {}
+		explicit stack(const Container &cont) : _cont(cont) {}
 		
-		queue(const queue &other) : _cont(other._cont) {}
+		stack(const stack &other) : _cont(other._cont) {}
 		
-		queue &operator=(const queue &other) {
+		stack &operator=(const stack &other) {
 			_cont = other._cont;
 			return *this;
 		}
 		
-		~queue() {}
+		~stack() {}
 		
-		reference back() {
+		reference top() {
 			return _cont.back();
 		}
 		
-		const_reference back() const {
+		const_reference top() const {
 			return _cont.back();
-		}
-		
-		reference front() {
-			return _cont.front();
-		}
-		
-		const_reference front() const {
-			return _cont.front();
 		}
 		
 		bool empty() const {
@@ -62,50 +56,50 @@ namespace ft {
 		}
 		
 		reference peek() {
-			return _cont.front();
+			return _cont.back();
 		}
 		
 		const_reference peek() const {
-			return _cont.front();
+			return _cont.back();
 		}
 		
 		void pop() {
-			_cont.erase(_cont.begin());
+			_cont.pop_back();
 		}
 		
-		static const queue<T, Container> init() {
-			return queue<T, Container>();
+		static const stack init() {
+			return stack<T, Container>();
 		}
 	
 	};
 	
 	template <class T, class Container>
-	bool operator==(const ft::queue<T> &lhs, const ft::queue<T> &rhs) {
+	bool operator==(const ft::stack<T> &lhs, const ft::stack<T> &rhs) {
 		return lhs._cont == rhs._cont;
 	}
 	
 	template <class T, class Container>
-	bool operator!=(const ft::queue<T> &lhs, const ft::queue<T> &rhs) {
+	bool operator!=(const ft::stack<T> &lhs, const ft::stack<T> &rhs) {
 		return lhs._cont != rhs._cont;
 	}
 	
 	template <class T, class Container>
-	bool operator<(const ft::queue<T> &lhs, const ft::queue<T> &rhs) {
+	bool operator<(const ft::stack<T> &lhs, const ft::stack<T> &rhs) {
 		return lhs._cont < rhs._cont;
 	}
 	
 	template <class T, class Container>
-	bool operator<=(const ft::queue<T> &lhs, const ft::queue<T> &rhs) {
+	bool operator<=(const ft::stack<T> &lhs, const ft::stack<T> &rhs) {
 		return lhs._cont <= rhs._cont;
 	}
 	
 	template <class T, class Container>
-	bool operator>(const ft::queue<T> &lhs, const ft::queue<T> &rhs) {
+	bool operator>(const ft::stack<T> &lhs, const ft::stack<T> &rhs) {
 		return lhs._cont > rhs._cont;
 	}
 	
 	template <class T, class Container>
-	bool operator>=(const ft::queue<T> &lhs, const ft::queue<T> &rhs) {
+	bool operator>=(const ft::stack<T> &lhs, const ft::stack<T> &rhs) {
 		return lhs._cont >= rhs._cont;
 	}
 	
