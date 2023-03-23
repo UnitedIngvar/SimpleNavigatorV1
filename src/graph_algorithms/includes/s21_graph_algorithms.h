@@ -3,11 +3,15 @@
 #ifndef S21_GRAPH_ALGORITHMS_H
 #define S21_GRAPH_ALGORITHMS_H
 
-#include "TsmResult.h"
 #include "IGraph.h"
+#include "Tsm.h"
 
 class GraphAlgorithms {
- public:
+private:
+  std::vector<vertex_id>
+  getShortestPathVectorBetweenVertices(IGraph &graph, int vertex1, int vertex2);
+
+public:
   GraphAlgorithms() {}
 
   std::vector<vertex_id> depthFirstSearch(IGraph &graph, int startVertex);

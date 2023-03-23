@@ -1,6 +1,6 @@
-#include "gmock.h"
 #include "GraphMock.h"
 #include "VertexMapForTests.h"
+#include "gmock.h"
 #include "gtest.h"
 #include "s21_graph_algorithms.h"
 
