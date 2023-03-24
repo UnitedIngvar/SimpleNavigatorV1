@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <fstream>
+#include <algorithm>
 
 #include "IMatrixReader.h"
 #include "types.h"
