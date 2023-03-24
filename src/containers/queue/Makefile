@@ -9,20 +9,20 @@ CFLAGS					= -Werror -Wall -Wextra -std=c++17
 AR						= ar -rcs
 
 %.o:		$(QUEUE_SRCS) $(QUEUE_INCLUDES)
-			$(CC) -c $(CFLAGS) $< -o $@
+	    $(CC) -c $(CFLAGS) $< -o $@
 
-$(NAME):	$(QUEUE_OBJS) $(QUEUE_INCLUDES) Makefile
-			$(AR) $(NAME) $(QUEUE_INCLUDES) $(QUEUE_OBJS)
-			ranlib $(NAME)
-			make clean
+$(NAME):	$(QUEUE_OBJS) $(QUEUE_INCLUDES)
+	    $(AR) $(NAME) $(QUEUE_INCLUDES) $(QUEUE_OBJS)
+	    ranlib $(NAME)
+	    make clean
 
 all: $(NAME)
 
 clean:
-		rm -f $(QUEUE_OBJS)
+	rm -f $(QUEUE_OBJS)
 
 fclean: clean
-		@rm -f $(NAME)
+	@rm -f $(NAME)
 
 re:		fclean all
 

@@ -1,11 +1,13 @@
 #include <algorithm>
+#include <climits>
+#include <cmath>
+#include <cstring>
 #include <queue>
-#include <stack>
 #include <unordered_set>
 
+#include "queue.h"
 #include "s21_graph_algorithms.h"
-//#include "queue.h"
-//#include "stack.h"
+#include "stack.h"
 
 // поиск в глубину (без рекурсии) DFS (обход всего графа от стартовой вершины)
 // ориентированный или неориентированный граф
@@ -13,7 +15,7 @@ std::vector<vertex_id> GraphAlgorithms::depthFirstSearch(IGraph &graph,
                                                          int startVertex) {
   std::vector<vertex_id> traversedVertices;
 
-  std::stack<vertex_id> unvisitedVerticesStack;
+  ft::stack<vertex_id> unvisitedVerticesStack;
   unvisitedVerticesStack.push(startVertex);
 
   std::unordered_set<vertex_id> visitedVerticesSet;
@@ -47,7 +49,7 @@ std::vector<vertex_id> GraphAlgorithms::depthFirstSearch(IGraph &graph,
 std::vector<vertex_id> GraphAlgorithms::breadthFirstSearch(IGraph &graph,
                                                            int startVertex) {
   std::unordered_set<vertex_id> visitedVerticesSet;
-  std::queue<vertex_id> unvisitedVerticesQueue;
+  ft::queue<vertex_id> unvisitedVerticesQueue;
   unvisitedVerticesQueue.push(startVertex);
   std::vector<vertex_id> traversedVertices;
 

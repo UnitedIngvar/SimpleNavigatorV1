@@ -20,8 +20,8 @@ class Vertex {
   Vertex(vertex_id vertexId);
   Vertex(Vertex const &other);
 
-  vertex_id getId() const;
-  std::vector<Adjacency> const getAdjacencies() const;
+  [[nodiscard]] vertex_id getId() const;
+  [[nodiscard]] std::vector<Adjacency> const getAdjacencies() const;
   void addAdjacency(Adjacency const &adjacency);
 
   bool operator==(Vertex const &other) const;

@@ -38,7 +38,7 @@ CC				= clang++
 CFLAGS			= -Werror -Wall -Wextra -std=c++17 #-fsanitize=address,undefined -fno-sanitize-recover -fstack-protector -g -O0
 AR				= ar -rcs
 
-all: $(NAME)
+all:	$(NAME)
 
 $(LIB_DIR):
 		mkdir $(LIB_DIR)
@@ -57,16 +57,16 @@ $(STACK_LIB): $(STACK_LIB_DIR)
 $(QUEUE_LIB): $(QUEUE_LIB_DIR)
 		cd $(QUEUE_LIB_DIR) && ${MAKE}
 
-$(ALGOS_DIR)/%.o: $(ALGOS_DIR)/%.cpp $(STACK_LIB) $(QUEUE_LIB)
-		$(CC) $(CFLAGS) $(ALGOS_INCLUDES) -l$(STACK_LIB) -l$(QUEUE_LIB) $< -o $@ -MMD
+$(ALGOS_DIR)/%.o: $(ALGOS_DIR)/%.cpp $(STACK_LIB) $(QUEUE_LIB) $(GRAPH_LIB)
+		$(CC) $(CFLAGS) $(ALGOS_INCLUDES) -I$(STACK_LIB_DIR) -I$(QUEUE_LIB_DIR) $< -c -o $@ -MMD
 
 $(ALGOS_LIB): $(ALGOS_OBJS) $(LIB_DIR) $(STACK_LIB) $(QUEUE_LIB)
-		$(AR) $(ALGOS_LIB) $(ALGOS_OBJS) -l$(STACK_LIB) -l$(QUEUE_LIB)
+		$(AR) $(ALGOS_LIB) $(ALGOS_OBJS)
 
 
 $(NAME): $(GRAPH_LIB) $(ALGOS_LIB) $(STACK_LIB) $(QUEUE_LIB) $(APP_SRCS)
 		$(CC) $(CFLAGS) $(APP_SRCS) $(APP_INCLUDES) $(ALGOS_INCLUDES) \
-		-l$(GRAPH_LIB) -l$(ALGOS_LIB) -l$(STACK_LIB) -l$(QUEUE_LIB) -c -o $(NAME)
+		-o $(NAME) $(GRAPH_LIB) $(ALGOS_OBJS) #graph_algorithms/GraphAlgorithms.o
 
 clean:
 		@rm -f $(GRAPH_OBJS) $(ALGOS_OBJS) $(APP_OBJS) \

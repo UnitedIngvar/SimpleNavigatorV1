@@ -5,13 +5,13 @@
 
 #include <set>
 
-#define ALPHA 1           	 // вес феромона
-#define BETA 1             	// коэффициент эвристики
-#define PH_EVAROPATION 0.8 	// коэффициент испарения феромона после каждого цикла
-#define Q_PH 100.0         	// количество феромона
+#define ALPHA 1            // вес феромона
+#define BETA 1             // коэффициент эвристики
+#define PH_EVAROPATION 0.8 // коэффициент испарения феромона после каждого цикла
+#define Q_PH 100.0         // количество феромона
 
-#define T_MAX 100    		// время жизни колонии
-#define CNT_ANTS 150 		// количество муравьев в колонии
+#define T_MAX 100    // время жизни колонии
+#define CNT_ANTS 150 // количество муравьев в колонии
 
 struct Ant {
   int distance;             // длина маршрута

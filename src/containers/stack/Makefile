@@ -9,20 +9,20 @@ CFLAGS					= -Werror -Wall -Wextra -std=c++17
 AR						= ar -rcs
 
 %.o:		$(STACK_SRCS) $(STACK_INCLUDES)
-			$(CC) -c $(CFLAGS) $< -o $@
+	    $(CC) -c $(CFLAGS) $< -o $@
 
-$(NAME):	$(STACK_OBJS) $(STACK_INCLUDES) Makefile
-			$(AR) $(NAME) $(STACK_INCLUDES) $(STACK_OBJS)
-			ranlib $(NAME)
-			make clean
+$(NAME):	$(STACK_OBJS) $(STACK_INCLUDES)
+	    $(AR) $(NAME) $(STACK_INCLUDES) $(STACK_OBJS)
+	    ranlib $(NAME)
+	    make clean
 
 all: $(NAME)
 
 clean:
-		rm -f $(STACK_OBJS)
+	rm -f $(STACK_OBJS)
 
 fclean: clean
-		@rm -f $(NAME)
+	@rm -f $(NAME)
 
 re:		fclean all
 

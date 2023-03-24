@@ -5,8 +5,6 @@
 
 #include "IGraph.h"
 #include "Tsm.h"
-//#include "stack.a"
-//#include "queue.a"
 
 class GraphAlgorithms {
 private:
