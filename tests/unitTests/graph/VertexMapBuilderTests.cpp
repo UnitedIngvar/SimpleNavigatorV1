@@ -1,27 +1,6 @@
 #include "VertexMapBuilder.h"
 #include "gtest.h"
 #include <filesystem>
-#include <iostream>
-
-// TODO: оставить для дебага
-std::ostream &operator<<(std::ostream &os, Adjacency const &obj) {
-  os << "\tAdjacency vertex id: " << obj.getVertex().getId() << std::endl;
-  os << "\tAdjacency weight: " << obj.getWeight() << std::endl;
-  return os;
-}
-
-// TODO: оставить для дебага
-std::ostream &operator<<(std::ostream &os, Vertex const &obj) {
-  os << "Vertex id: " << obj.getId() << std::endl;
-  os << "Adjacency list:" << std::endl;
-  for (auto &&adjacency : obj.getAdjacencies()) {
-    os << std::endl;
-    os << adjacency << std::endl;
-  }
-
-  os << std::endl << std::endl;
-  return os;
-}
 
 TEST(VertexMapBuilderTests,
      BuildVerticesMap_UndirectredGraph_ReturnsValidGraph) {
@@ -68,6 +47,10 @@ TEST(VertexMapBuilderTests,
   for (vertex_id i = 1; i <= size; i++) {
     EXPECT_EQ(*(vertexMap.at(i)), expectedVertexMap.at(i));
   }
+
+  for (auto pair : vertexMap) {
+    delete pair.second;
+  }
 }
 
 TEST(VertexMapBuilderTests,
@@ -110,6 +93,10 @@ TEST(VertexMapBuilderTests,
 
   for (vertex_id i = 1; i <= size; i++) {
     EXPECT_EQ(*(vertexMap.at(i)), expectedVertexMap.at(i));
+  }
+
+  for (auto pair : vertexMap) {
+    delete pair.second;
   }
 }
 
@@ -159,5 +146,9 @@ TEST(VertexMapBuilderTests,
 
   for (vertex_id i = 1; i <= size; i++) {
     EXPECT_EQ(*(vertexMap.at(i)), expectedVertexMap.at(i));
+  }
+
+  for (auto pair : vertexMap) {
+    delete pair.second;
   }
 }

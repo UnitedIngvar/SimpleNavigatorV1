@@ -44,7 +44,6 @@ class Graph : public IGraph {
   weight **getAdjacencyMatrix() const;
   bool isWeighted() const;
   bool isDirected() const;
-  bool isInitialized() const;
 
   ~Graph();
 };

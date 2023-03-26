@@ -1,4 +1,4 @@
-NAME					= greph
+NAME					= SimpleNavigator
 
 LIB_DIR					= lib
 GRAPH_LIB				= $(LIB_DIR)/s21_graph.a
@@ -34,11 +34,15 @@ ALGOS_SRCS				:= $(shell find $(ALGOS_DIR) -name "*.cpp")
 ALGOS_OBJS				= $(patsubst %.cpp, %.o, $(ALGOS_SRCS))
 ALGOS_D_FILES			= ${patsubst %.cpp, %.d, ${ALGOS_SRCS}}
 
-CC				= clang++
-CFLAGS			= -Werror -Wall -Wextra -std=c++17 #-fsanitize=address,undefined -fno-sanitize-recover -fstack-protector -g -O0
+CXX				= clang++
+CXXFLAGS		= -Werror -Wall -Wextra -std=c++17
 AR				= ar -rcs
 
 all:	$(NAME)
+
+leaks:
+		$(CXXFLAGS) += -fsanitize=address,undefined -fno-sanitize-recover -fstack-protector -O0
+		$(MAKE) run_leaks
 
 $(LIB_DIR):
 		mkdir $(LIB_DIR)
@@ -46,7 +50,7 @@ $(LIB_DIR):
 libs: $(ALGOS_LIB) $(GRAPH_LIB) $(STACK_LIB) $(QUEUE_LIB)
 
 $(GRAPH_DIR)/%.o: $(GRAPH_DIR)/%.cpp
-		$(CC) $(CFLAGS) -c $(GRAPH_INCLUDES) $< -o $@ -MMD
+		$(CXX) $(CXXFLAGS) -c $(GRAPH_INCLUDES) $< -o $@ -MMD
 
 $(GRAPH_LIB): $(GRAPH_OBJS) $(LIB_DIR)
 		$(AR) $(GRAPH_LIB) $(GRAPH_OBJS)
@@ -58,27 +62,30 @@ $(QUEUE_LIB): $(QUEUE_LIB_DIR)
 		cd $(QUEUE_LIB_DIR) && ${MAKE}
 
 $(ALGOS_DIR)/%.o: $(ALGOS_DIR)/%.cpp $(STACK_LIB) $(QUEUE_LIB) $(GRAPH_LIB)
-		$(CC) $(CFLAGS) $(ALGOS_INCLUDES) -I$(STACK_LIB_DIR) -I$(QUEUE_LIB_DIR) $< -c -o $@ -MMD
+		$(CXX) $(CXXFLAGS) $(ALGOS_INCLUDES) -I$(STACK_LIB_DIR) -I$(QUEUE_LIB_DIR) $< -c -o $@ -MMD
 
 $(ALGOS_LIB): $(ALGOS_OBJS) $(LIB_DIR) $(STACK_LIB) $(QUEUE_LIB)
 		$(AR) $(ALGOS_LIB) $(ALGOS_OBJS)
 
 
 $(NAME): $(GRAPH_LIB) $(ALGOS_LIB) $(STACK_LIB) $(QUEUE_LIB) $(APP_SRCS)
-		$(CC) $(CFLAGS) $(APP_SRCS) $(APP_INCLUDES) $(ALGOS_INCLUDES) \
+		$(CXX) $(CXXFLAGS) $(APP_SRCS) $(APP_INCLUDES) $(ALGOS_INCLUDES) \
 		-o $(NAME) $(GRAPH_LIB) $(ALGOS_OBJS) #graph_algorithms/GraphAlgorithms.o
 
 clean:
 		@rm -f $(GRAPH_OBJS) $(ALGOS_OBJS) $(APP_OBJS) \
 		$(APP_D_FILES) $(GRAPH_D_FILES) $(ALGOS_D_FILES) $(GRAPH_LIB) $(ALGOS_LIB) \
 		$(STACK_LIB) $(QUEUE_LIB)
-		cd $(STACK_LIB_DIR) && make clean
-		cd $(QUEUE_LIB_DIR) && make clean
+		@cd $(STACK_LIB_DIR) && $(MAKE) clean
+		@cd $(QUEUE_LIB_DIR) && $(MAKE) clean
 
 fclean: clean
 		@rm -rf $(NAME) $(LIB_DIR) $(STACK_LIB) $(QUEUE_LIB)
 
 re:		fclean all
+
+run_leaks : $(NAME)
+	leaks --atExit -- ./$(NAME)
 
 test:
 	cd ../tests && ${MAKE}

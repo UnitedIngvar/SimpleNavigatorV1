@@ -1,10 +1,10 @@
 #include <map>
 
-#include "gmock.h"
-#include "gtest.h"
 #include "DotBuilderMock.h"
 #include "MatrixReaderMock.h"
 #include "VertexMapBuilderMock.h"
+#include "gmock.h"
+#include "gtest.h"
 #include "s21_graph.h"
 #include <filesystem>
 
@@ -181,6 +181,69 @@ TEST(GraphTests, LoadGraphFromFile_WeightedDirectedGraph_GraphHasValidValues) {
 
   // Act
   graph.loadGraphFromFile(filename);
+
+  // Assert
+  ASSERT_EQ(size, graph.getMatrixSize());
+  ASSERT_TRUE(graph.isDirected());
+  ASSERT_TRUE(graph.isWeighted());
+
+  auto actualMatrix = graph.getAdjacencyMatrix();
+  for (size_t i = 0; i < size; i++) {
+    for (size_t j = 0; j < size; j++) {
+      ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
+    }
+  }
+
+  for (size_t i = 1; i <= size; i++) {
+    ASSERT_EQ(*expectedVertexMap[i], graph.getVertexById(i));
+  }
+}
+
+TEST(GraphTests, LoadGraphFromFile_LoadGraphMoreThanOnce_GraphHasValidValues) {
+  // Arrange
+  MatrixReaderMock matrixReaderMock;
+  VertexMapBuilderMock vertexMapBuilderMock;
+  DotBuilderMock dotBuilderMock;
+  std::string filename = "./unitTests/graph/testData/MockMap.txt";
+  std::ifstream file(filename);
+  ASSERT_TRUE(file.good());
+  file.close();
+
+  const int size = 4;
+  weight matrix[size][size] = {
+      {0, 29, 0, 21}, {29, 0, 15, 29}, {20, 15, 0, 0}, {21, 29, 15, 0}};
+
+  auto graph = Graph(matrixReaderMock, vertexMapBuilderMock, dotBuilderMock);
+
+  weight **expectedMatrix;
+  std::map<vertex_id, Vertex *> expectedVertexMap;
+  for (size_t i = 0; i < 3; i++) {
+    expectedMatrix = new weight *[size];
+    for (size_t i = 0; i < size; i++) {
+      expectedMatrix[i] = new weight[size];
+      for (size_t j = 0; j < size; j++) {
+        expectedMatrix[i][j] = matrix[i][j];
+      }
+    }
+
+    expectedVertexMap = {{1, new Vertex(1)},
+                         {2, new Vertex(2)},
+                         {3, new Vertex(3)},
+                         {4, new Vertex(4)}};
+
+    EXPECT_CALL(matrixReaderMock, readMatrixSize(_))
+        .Times(1)
+        .WillOnce(Return(size));
+    EXPECT_CALL(matrixReaderMock, readAdjacencyMatrix(_, size))
+        .Times(1)
+        .WillOnce(Return(expectedMatrix));
+    EXPECT_CALL(vertexMapBuilderMock, buildVerticesMap(expectedMatrix, size))
+        .Times(1)
+        .WillOnce(Return(expectedVertexMap));
+
+    // Act
+    graph.loadGraphFromFile(filename);
+  }
 
   // Assert
   ASSERT_EQ(size, graph.getMatrixSize());

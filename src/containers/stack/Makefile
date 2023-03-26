@@ -19,7 +19,7 @@ $(NAME):	$(STACK_OBJS) $(STACK_INCLUDES)
 all: $(NAME)
 
 clean:
-	rm -f $(STACK_OBJS)
+	@rm -f $(STACK_OBJS)
 
 fclean: clean
 	@rm -f $(NAME)

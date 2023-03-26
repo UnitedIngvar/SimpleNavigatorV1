@@ -3,10 +3,7 @@
 #ifndef ADJACENCY_H
 #define ADJACENCY_H
 
-#include <Vertex.h>
-
-#include <iostream>
-
+#include "Vertex.h"
 #include "types.h"
 
 class Vertex;

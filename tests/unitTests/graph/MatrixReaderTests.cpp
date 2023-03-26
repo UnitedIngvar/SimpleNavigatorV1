@@ -238,6 +238,11 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithExmapleMap) {
       ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
     }
   }
+
+  for (int i = 0; i < matrixSize; i++) {
+    delete actualMatrix[i];
+  }
+  delete actualMatrix;
 }
 
 TEST(MatrixReaderTests,
@@ -277,6 +282,11 @@ TEST(MatrixReaderTests,
       ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
     }
   }
+
+  for (int i = 0; i < matrixSize; i++) {
+    delete actualMatrix[i];
+  }
+  delete actualMatrix;
 }
 
 TEST(MatrixReaderTests,
@@ -316,6 +326,11 @@ TEST(MatrixReaderTests,
       ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
     }
   }
+
+  for (int i = 0; i < matrixSize; i++) {
+    delete actualMatrix[i];
+  }
+  delete actualMatrix;
 }
 
 TEST(MatrixReaderTests,
@@ -355,6 +370,11 @@ TEST(MatrixReaderTests,
       ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
     }
   }
+
+  for (int i = 0; i < matrixSize; i++) {
+    delete actualMatrix[i];
+  }
+  delete actualMatrix;
 }
 
 TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddColumns_ReturnsValidMatrix) {
@@ -393,6 +413,11 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddColumns_ReturnsValidMatrix) {
       ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
     }
   }
+
+  for (int i = 0; i < matrixSize; i++) {
+    delete actualMatrix[i];
+  }
+  delete actualMatrix;
 }
 
 TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddRows_ReturnsValidMatrix) {
@@ -431,6 +456,11 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithOddRows_ReturnsValidMatrix) {
       ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
     }
   }
+
+  for (int i = 0; i < matrixSize; i++) {
+    delete actualMatrix[i];
+  }
+  delete actualMatrix;
 }
 
 TEST(MatrixReaderTests,
@@ -459,6 +489,11 @@ TEST(MatrixReaderTests,
       ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
     }
   }
+
+  for (int i = 0; i < matrixSize; i++) {
+    delete actualMatrix[i];
+  }
+  delete actualMatrix;
 }
 
 TEST(MatrixReaderTests,
@@ -488,9 +523,14 @@ TEST(MatrixReaderTests,
       ASSERT_EQ(actualMatrix[i][j], expectedMatrix[i][j]);
     }
   }
+
+  for (int i = 0; i < matrixSize; i++) {
+    delete actualMatrix[i];
+  }
+  delete actualMatrix;
 }
 
-TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithEmtpyLines_ThrowsExceptio) {
+TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithEmptyLines_ThrowsException) {
   // Arrange
   const std::string pathToFile =
       "./unitTests/graph/testData/InvalidMatrixWithEmtpyLines.txt";
@@ -512,7 +552,7 @@ TEST(MatrixReaderTests, ReadAdjacencyMatrix_WithEmtpyLines_ThrowsExceptio) {
 }
 
 TEST(MatrixReaderTests,
-     ReadAdjacencyMatrix_WithMultipleShorterRows_ThrowsExceptio) {
+     ReadAdjacencyMatrix_WithMultipleShorterRows_ThrowsException) {
   // Arrange
   const std::string pathToFile =
       "./unitTests/graph/testData/InvalidMatrixWithMultipleShorterRows.txt";
@@ -534,7 +574,7 @@ TEST(MatrixReaderTests,
 }
 
 TEST(MatrixReaderTests,
-     ReadAdjacencyMatrix_WithSingleShorterRow_ThrowsExceptio) {
+     ReadAdjacencyMatrix_WithSingleShorterRow_ThrowsException) {
   // Arrange
   const std::string pathToFile =
       "./unitTests/graph/testData/InvalidMatrixWithSingleShorterRow.txt";
@@ -576,6 +616,7 @@ TEST(MatrixReaderTests,
   // Assert
   ASSERT_THROW(matrixReader.readAdjacencyMatrix(file, matrixSize),
                std::invalid_argument);
+  file.close();
 }
 
 TEST(MatrixReaderTests,
@@ -599,6 +640,7 @@ TEST(MatrixReaderTests,
   // Assert
   ASSERT_THROW(matrixReader.readAdjacencyMatrix(file, matrixSize),
                std::invalid_argument);
+  file.close();
 }
 
 TEST(MatrixReaderTests,
@@ -621,4 +663,5 @@ TEST(MatrixReaderTests,
   // Assert
   ASSERT_THROW(matrixReader.readAdjacencyMatrix(file, matrixSize),
                std::invalid_argument);
+  file.close();
 }

@@ -7,11 +7,12 @@
 #include "Tsm.h"
 
 class GraphAlgorithms {
-private:
-  std::vector<vertex_id>
-  getShortestPathVectorBetweenVertices(IGraph &graph, int vertex1, int vertex2);
+ private:
+  std::vector<vertex_id> getShortestPathVectorBetweenVertices(IGraph &graph,
+                                                              int vertex1,
+                                                              int vertex2);
 
-public:
+ public:
   GraphAlgorithms() {}
 
   std::vector<vertex_id> depthFirstSearch(IGraph &graph, int startVertex);
