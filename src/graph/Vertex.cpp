@@ -1,7 +1,5 @@
 #include "Vertex.h"
 
-#include <iostream>
-
 Vertex::Vertex(Vertex const &other)
     : _id(other._id), _adjacentVertices(other._adjacentVertices) {}
 

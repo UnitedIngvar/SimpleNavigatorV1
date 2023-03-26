@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <exception>
-#include <iostream>
 #include <vector>
 
 #include "Constants.h"
@@ -123,10 +122,6 @@ bool Graph::isDirected() const {
   } else {
     throw std::invalid_argument("matrix is not initialized");
   }
-}
-
-bool Graph::isInitialized() const {
-  return _isInitialized;
 }
 
 Graph::~Graph() {

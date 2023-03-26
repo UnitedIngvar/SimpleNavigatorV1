@@ -19,7 +19,7 @@ $(NAME):	$(QUEUE_OBJS) $(QUEUE_INCLUDES)
 all: $(NAME)
 
 clean:
-	rm -f $(QUEUE_OBJS)
+	@rm -f $(QUEUE_OBJS)
 
 fclean: clean
 	@rm -f $(NAME)

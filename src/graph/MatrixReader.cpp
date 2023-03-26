@@ -1,8 +1,13 @@
 #include "MatrixReader.h"
 
-#include <iostream>
-
 #include "Constants.h"
+
+void MatrixReader::dropMatrix(weight **matrix, int const matrixSize) const {
+  for (int i = 0; i < matrixSize; i++) {
+    delete[] matrix[i];
+  }
+  delete[] matrix;
+}
 
 int MatrixReader::readNextNumberOrThrow(
     std::string const &line, size_t *offset,
@@ -93,6 +98,8 @@ weight **MatrixReader::readAdjacencyMatrix(std::ifstream &file,
 
     size_t offset = 0;
     if (file.peek() == EOF) {
+      dropMatrix(matrix, matrixSize);
+
       throw std::invalid_argument(
           "invalid number of rows in the adjecency matrix");
     }
@@ -100,8 +107,17 @@ weight **MatrixReader::readAdjacencyMatrix(std::ifstream &file,
     std::string line;
     getline(file, line);
     for (int j = 0; j < matrixSize; j++) {
-      weight number = readNextNumberOrThrow(
-          line, &offset, "invalid number of columns in the adjecency matrix");
+      weight number;
+
+      try {
+        number = readNextNumberOrThrow(
+            line, &offset, "invalid number of columns in the adjecency matrix");
+      } catch (std::invalid_argument &ex) {
+        dropMatrix(matrix, matrixSize);
+
+        throw ex;
+      }
+
       if (number != 0) {
         hasAdjacency = true;
       }
@@ -109,6 +125,8 @@ weight **MatrixReader::readAdjacencyMatrix(std::ifstream &file,
     }
 
     if (!hasAdjacency) {
+      dropMatrix(matrix, matrixSize);
+
       throw std::invalid_argument(
           "A vertex should have at least one adjacency");
     }

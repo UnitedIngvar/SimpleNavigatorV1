@@ -1,7 +1,7 @@
 #include "ConsoleApp.h"
 
 int main(void) {
-	ConsoleApp consoleApp;
+  ConsoleApp consoleApp;
 
-	consoleApp.start();
+  consoleApp.start();
 }

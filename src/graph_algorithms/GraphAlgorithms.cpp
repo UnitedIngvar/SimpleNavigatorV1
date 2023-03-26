@@ -97,7 +97,7 @@ distance GraphAlgorithms::getShortestPathBetweenVertices(IGraph &graph,
           distances[vertexId] < minWeight) {
         minVertexId = vertexId;
         minWeight = distances[vertexId];
-        if (minWeight < 0) { // проверка на наличие отрицательных весов
+        if (minWeight < 0) {  // проверка на наличие отрицательных весов
           throw std::invalid_argument(
               "Dijkstra's algorithm only works for graphs with non-negative "
               "weights.");
@@ -244,7 +244,8 @@ weight **GraphAlgorithms::getLeastSpanningTree(IGraph &graph) {
       std::vector<std::pair<weight, std::pair<vertex_id, vertex_id>>>,
       std::greater<std::pair<weight, std::pair<vertex_id, vertex_id>>>>
       unvisitedVerticesQueue;
-  unvisitedVerticesQueue.push({0, {1, -1}}); // начинаем с вершины 1, предка нет
+  unvisitedVerticesQueue.push(
+      {0, {1, -1}});  // начинаем с вершины 1, предка нет
   std::unordered_set<vertex_id> includedVerticesInSpanningTree;
 
   while (!unvisitedVerticesQueue.empty()) {
@@ -315,7 +316,7 @@ vertex_id getNext(Ant ant, double **pheromone, double **distances,
     return -1;
   }
 
-  double x = rand() / double(RAND_MAX); // рандомное число от 0 до 1
+  double x = rand() / double(RAND_MAX);  // рандомное число от 0 до 1
   for (size_t i = 0; i < result.size() - 1; i++) {
     if (x < result[i].second) {
       return result[i].first;
@@ -362,7 +363,6 @@ TsmResult GraphAlgorithms::solveTravelingSalesmanProblem(IGraph &graph) {
 
   // время жизни муравьиной колонии
   for (int t = 0; t < T_MAX; t++) {
-
     // цикл по муравьям
     for (auto &ant : ants) {
       // инициализация муравья
@@ -373,7 +373,7 @@ TsmResult GraphAlgorithms::solveTravelingSalesmanProblem(IGraph &graph) {
       ant.path.push_back(0);
 
       // поиск маршрута для a-го муравья
-      while (true) { // пока не посетим все вершины
+      while (true) {  // пока не посетим все вершины
         // получаем следущую вершину высчитывая вероятности
         vertex_id to = getNext(ant, pheromone, distances, sizeGraph);
         if (to == -1) {
@@ -417,7 +417,7 @@ TsmResult GraphAlgorithms::solveTravelingSalesmanProblem(IGraph &graph) {
 
   std::vector<int> newVertices(1, 1);
   for (size_t i = 0; i < result.vertices.size(); i++) {
-    result.vertices[i]++; // возвращаем 1-индексацию
+    result.vertices[i]++;  // возвращаем 1-индексацию
     if (i > 0) {
       // с помощью алгоритма Дейкстры восстанавливаем кратчайший путь
       std::vector<int> shortestPath = getShortestPathVectorBetweenVertices(

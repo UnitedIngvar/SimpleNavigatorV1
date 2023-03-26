@@ -8,18 +8,19 @@
 #include <vector>
 
 namespace ft {
-template <class T, class Container = std::vector<T>> class queue {
-public:
+template <class T, class Container = std::vector<T>>
+class queue {
+ public:
   typedef Container container_type;
   typedef typename Container::value_type value_type;
   typedef typename Container::size_type size_type;
   typedef typename Container::reference reference;
   typedef typename Container::const_reference const_reference;
 
-protected:
+ protected:
   container_type _cont;
 
-public:
+ public:
   /*Constructors etc*/
   queue() : queue(Container()) {}
 
@@ -87,6 +88,6 @@ bool operator>=(const ft::queue<T> &lhs, const ft::queue<T> &rhs) {
   return lhs._cont >= rhs._cont;
 }
 
-}
+}  // namespace ft
 
 #endif

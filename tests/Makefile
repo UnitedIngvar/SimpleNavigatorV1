@@ -34,12 +34,15 @@ GMOCK_LIB				= $(GTEST_DIR)/lib/libgmock_main.a $(GTEST_DIR)/lib/libgmock.a
 
 GTEST_BUILD				= $(GTEST_LIB) $(GMOCK_LIB)
 
+CXX		 := clang++
 CPPFLAGS += -isystem
-CXXFLAGS += -g -Wall -Wextra -pthread -std=c++17 #-fsanitize=address,undefined -fno-sanitize-recover -fstack-protector -O0
+CXXFLAGS += -Wall -Wextra -pthread -std=c++17
 
 all: $(GTEST_BUILD) run
 
-leaks: $(GTEST_BUILD) run_leaks
+leaks:
+		$(CXXFLAGS) += -fsanitize=address,undefined -fno-sanitize-recover -fstack-protector -O0
+		$(MAKE) run_leaks
 
 $(GTEST_BUILD):
 	@cd $(GTEST_DIR_REPOSITORY); \
@@ -71,7 +74,7 @@ run : $(TESTS)
 	./$(TESTS) $(IGNORE_ERROR)
 	$(MAKE) clean
 
-run_leaks : $(TESTS)
+run_leaks : $(GTEST_BUILD) $(TESTS)
 	leaks --atExit -- ./$(TESTS) $(IGNORE_ERROR)
 	$(MAKE) clean
 

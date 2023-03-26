@@ -3,8 +3,6 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include <iostream>
-
 #include "Adjacency.h"
 #include "types.h"
 #include "vector"
