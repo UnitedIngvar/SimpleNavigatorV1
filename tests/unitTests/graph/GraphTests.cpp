@@ -483,5 +483,5 @@ TEST(GraphTests, ExportGraphToDot_ExportsGraphToNonExistentFile) {
   ASSERT_EQ(resultFileContentLine, expectedString);
 
   resultFile.close();
-  std::filesystem::remove(filename);
+  //std::filesystem::remove(filename);
 }
